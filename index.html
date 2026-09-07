@@ -3,261 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dompet Digital</title>
-    <!-- Chart.js CDN untuk Grafik -->
+    <title>Aplikasi Keuangan</title>
+    <!-- Chart.js untuk Grafik Donut -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #0f172a; color: #ffffff; display: flex; justify-content: center; min-height: 100vh; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #eef2f5; display: flex; justify-content: center; min-height: 100vh; }
         
-        .app-container { width: 100%; max-width: 420px; background: #1e293b; min-height: 100vh; position: relative; padding: 20px 16px 90px 16px; border-radius: 16px; }
+        .app-container { width: 100%; max-width: 420px; background: #f8fafc; min-height: 100vh; position: relative; padding: 16px 16px 80px 16px; border-radius: 20px; }
+
+        /* Navigation Bottom Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-around; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100; }
+        .nav-item { border: none; background: none; font-size: 12px; font-weight: 600; color: #94a3b8; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item.active { color: #1e293b; }
+        .nav-icon { font-size: 20px; }
+
+        /* Tab Content Display */
+        .tab-page { display: none; }
+        .tab-page.active { display: block; }
+
+        /* UI Elements / Cards */
+        .card { background: #ffffff; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         
-        /* Profile Header */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 48px; height: 48px; background: #00f2fe; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #0f172a; font-weight: bold; }
-        .user-name h3 { font-size: 16px; font-weight: 600; }
-        .user-name p { font-size: 12px; color: #94a3b8; }
-        .menu-btn { background: #334155; border: none; width: 40px; height: 40px; border-radius: 10px; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
-
-        /* Total Balance Card */
-        .balance-section { text-align: center; margin-bottom: 20px; }
-        .balance-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
-        .total-balance { font-size: 32px; font-weight: 700; color: #ffffff; margin-bottom: 16px; }
+        /* SHEET 1: HOME (SELAMAT DATANG) */
+        .welcome-header { margin-top: 20px; text-align: center; margin-bottom: 25px; }
+        .welcome-avatar { width: 70px; height: 70px; background: #dcfce7; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; margin: 0 auto 12px auto; }
+        .welcome-title { font-size: 22px; color: #0f172a; font-weight: 700; margin-bottom: 6px; }
+        .welcome-subtitle { font-size: 13px; color: #64748b; line-height: 1.5; }
         
-        .stats-grid { display: flex; justify-content: space-around; gap: 10px; }
-        .stat-card { flex: 1; background: #334155; padding: 12px; border-radius: 14px; display: flex; align-items: center; gap: 10px; }
-        .stat-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; }
-        .stat-in { background: rgba(0, 242, 254, 0.15); color: #00f2fe; }
-        .stat-out { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .stat-info p { font-size: 10px; color: #94a3b8; }
-        .stat-info h4 { font-size: 13px; font-weight: 600; }
+        .quick-card { background: #f1f5f9; border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
+        .quick-card:hover { background: #e2e8f0; }
 
-        /* Chart Section */
-        .chart-card { background: #334155; padding: 16px; border-radius: 18px; margin-bottom: 20px; }
-        .chart-container { width: 100%; height: 160px; }
+        /* SHEET 2: CASHFLOW */
+        .cashflow-header { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 12px; color: #64748b; font-weight: 600; }
+        .stat-badge-container { display: flex; gap: 10px; margin-bottom: 16px; }
+        .stat-badge { flex: 1; padding: 14px; border-radius: 16px; }
+        .bg-income { background: #dcfce7; color: #15803d; }
+        .bg-expense { background: #f3e8ff; color: #6b21a8; }
+        .badge-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; font-weight: bold; margin-bottom: 6px; }
+        .badge-amount { font-size: 18px; font-weight: 700; margin-top: 4px; }
+        
+        .chart-box { position: relative; height: 220px; display: flex; justify-content: center; align-items: center; }
+        .chart-center-text { position: absolute; text-align: center; }
+        .chart-center-text p { font-size: 11px; color: #64748b; }
+        .chart-center-text h3 { font-size: 20px; font-weight: 700; color: #0f172a; }
 
-        /* Recent Transactions */
-        .section-title { font-size: 14px; font-weight: 600; color: #cbd5e1; margin-bottom: 12px; }
-        .tx-list { display: flex; flex-direction: column; gap: 10px; }
-        .tx-item { background: #334155; padding: 12px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .tx-left { display: flex; align-items: center; gap: 12px; }
-        .tx-icon { width: 38px; height: 38px; background: #00f2fe; border-radius: 50%; color: #0f172a; display: flex; justify-content: center; align-items: center; font-size: 16px; }
-        .tx-title { font-size: 13px; font-weight: 600; }
-        .tx-date { font-size: 11px; color: #94a3b8; }
-        .tx-amount { font-size: 13px; font-weight: 700; text-align: right; }
-        .amount-in { color: #00f2fe; }
-        .amount-out { color: #ef4444; }
+        /* SHEET 3: INPUT & RIWAYAT */
+        .form-card { background: #f3e8ff; border-radius: 20px; padding: 18px; margin-bottom: 16px; }
+        .form-title { font-size: 12px; font-weight: 700; color: #6b21a8; margin-bottom: 12px; text-transform: uppercase; }
+        .input-field { width: 100%; padding: 12px; border: none; background: rgba(255,255,255,0.7); border-radius: 10px; margin-bottom: 10px; font-size: 13px; outline: none; }
+        .btn-send { width: 100%; padding: 12px; background: #0f172a; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
 
-        /* Navigation Bar Bottom */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: #0f172a; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .nav-icon { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; }
-        .nav-icon.active { color: #00f2fe; }
-        .add-btn { width: 54px; height: 54px; background: #00f2fe; border: none; border-radius: 50%; color: #0f172a; font-size: 26px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); margin-top: -25px; }
-
-        /* Modal Input */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: #1e293b; width: 90%; max-width: 380px; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
-        .modal-content h3 { margin-bottom: 16px; color: #fff; font-size: 16px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 8px; color: white; font-size: 13px; }
-        .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
-        .btn-cancel { flex: 1; padding: 10px; background: transparent; border: 1px solid #475569; color: #cbd5e1; border-radius: 8px; cursor: pointer; }
-        .btn-save { flex: 1; padding: 10px; background: #00f2fe; border: none; color: #0f172a; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .tx-title { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; }
+        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .tx-item:last-child { border-bottom: none; }
+        .tx-left { display: flex; align-items: center; gap: 10px; }
+        .tx-avatar { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+        .tx-name { font-size: 13px; font-weight: 600; color: #0f172a; }
+        .tx-time { font-size: 11px; color: #94a3b8; }
+        .tx-val { font-size: 13px; font-weight: 700; }
+        .val-in { color: #16a34a; }
+        .val-out { color: #dc2626; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header -->
-    <div class="header">
-        <div class="user-info">
-            <div class="avatar">👤</div>
-            <div class="user-name">
-                <h3>RAYMON KHAIRUL</h3>
-                <p>DATA ASISTEN KEUANGAN </p>
+
+    <!-- SHEET 1: SELAMAT DATANG (HOME) -->
+    <div id="sheet-home" class="tab-page active">
+        <div class="welcome-header">
+            <div class="welcome-avatar">👋</div>
+            <h2 class="welcome-title">Selamat Datang!</h2>
+            <p class="welcome-subtitle">Kelola keuangan harian Anda dengan mudah, rapi, dan cepat.</p>
+        </div>
+
+        <div class="card">
+            <div class="quick-card" onclick="switchTab('cashflow')">
+                <h4 style="color:#0f172a; margin-bottom:4px;">📊 Lihat Laporan Keuangan</h4>
+                <p style="font-size:12px; color:#64748b;">Pantau grafik pemasukan & pengeluaran</p>
+            </div>
+            
+            <div class="quick-card" onclick="switchTab('transaksi')">
+                <h4 style="color:#0f172a; margin-bottom:4px;">✏️ Catat Transaksi Baru</h4>
+                <p style="font-size:12px; color:#64748b;">Tambah catatan pemasukan atau pengeluaran</p>
             </div>
         </div>
-        <button class="menu-btn" onclick="resetData()">⚙️</button>
     </div>
 
-    <!-- Balance -->
-    <div class="balance-section">
-        <p class="balance-label">Total Saldo</p>
-        <div class="total-balance" id="totalBalance">Rp 0</div>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon stat-in">↑</div>
-                <div class="stat-info">
-                    <p>Pemasukan</p>
-                    <h4 id="statIn" class="amount-in">Rp 0</h4>
+    <!-- SHEET 2: CASHFLOW (RINGKASAN & GRAFIK) -->
+    <div id="sheet-cashflow" class="tab-page">
+        <div class="cashflow-header">
+            <span>CASHFLOW</span>
+            <span>RINGKASAN</span>
+        </div>
+
+        <div class="stat-badge-container">
+            <div class="stat-badge bg-income">
+                <div class="badge-icon">↓</div>
+                <div style="font-size:11px;">Pemasukan</div>
+                <div class="badge-amount" id="sumIncome">Rp 0</div>
+            </div>
+            <div class="stat-badge bg-expense">
+                <div class="badge-icon">↑</div>
+                <div style="font-size:11px;">Pengeluaran</div>
+                <div class="badge-amount" id="sumExpense">Rp 0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="chart-box">
+                <canvas id="cashflowChart"></canvas>
+                <div class="chart-center-text">
+                    <p>Total Cashflow</p>
+                    <h3 id="sumTotal">Rp 0</h3>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon stat-out">↓</div>
-                <div class="stat-info">
-                    <p>Pengeluaran</p>
-                    <h4 id="statOut" class="amount-out">Rp 0</h4>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Chart -->
-    <div class="chart-card">
-        <div class="chart-container">
-            <canvas id="financeChart"></canvas>
-        </div>
-    </div>
-
-    <!-- Transactions List -->
-    <div class="section-title">Riwayat Transaksi</div>
-    <div class="tx-list" id="txList"></div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <button class="nav-icon active">🏠</button>
-        <button class="add-btn" onclick="openModal()">+</button>
-        <button class="nav-icon" onclick="resetData()">🗑️</button>
-    </div>
-</div>
-
-<!-- Modal Form -->
-<div class="modal" id="inputModal">
-    <div class="modal-content">
-        <h3>Tambah Transaksi Baru</h3>
-        <form id="txForm">
-            <div class="form-group">
-                <label>Keterangan</label>
-                <input type="text" id="keterangan" placeholder="Contoh: Belanja / Gaji" required>
-            </div>
-            <div class="form-group">
-                <label>Nominal (Rp)</label>
-                <input type="number" id="jumlah" placeholder="0" required>
-            </div>
-            <div class="form-group">
-                <label>Jenis Transaksi</label>
-                <select id="jenis">
+    <!-- SHEET 3: INPUT TRANSAKSI & RIWAYAT -->
+    <div id="sheet-transaksi" class="tab-page">
+        <div class="form-card">
+            <div class="form-title">Tambah Transaksi Baru</div>
+            <form id="formTx">
+                <input type="text" id="keterangan" class="input-field" placeholder="Keterangan (misal: Makan Siang)" required>
+                <input type="number" id="jumlah" class="input-field" placeholder="Nominal (Rp)" required>
+                <select id="jenis" class="input-field" style="color:#0f172a;">
                     <option value="pemasukan">Pemasukan (+)</option>
                     <option value="pengeluaran">Pengeluaran (-)</option>
                 </select>
-            </div>
-            <div class="modal-btns">
-                <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
-                <button type="submit" class="btn-save">Simpan</button>
-            </div>
-        </form>
+                <button type="submit" class="btn-send">Simpan Transaksi →</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="tx-title">Transaksi Terakhir</div>
+            <div id="historyList"></div>
+        </div>
     </div>
+
+    <!-- BOTTOM NAVIGATION (3 MENU) -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home')" id="btn-home">
+            <span class="nav-icon">🏠</span>
+            <span>Beranda</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('cashflow')" id="btn-cashflow">
+            <span class="nav-icon">📊</span>
+            <span>Cashflow</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('transaksi')" id="btn-transaksi">
+            <span class="nav-icon">💳</span>
+            <span>Transaksi</span>
+        </button>
+    </div>
+
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('dompet_dark_db')) || [];
-    let myChart = null;
+    let db = JSON.parse(localStorage.getItem('keuangan_3sheet_db')) || [];
+    let donutChart = null;
 
-    function formatRupiah(angka) {
-        return 'Rp ' + Number(angka).toLocaleString('id-ID');
+    function formatRp(val) {
+        return 'Rp ' + Number(val).toLocaleString('id-ID');
     }
 
-    function openModal() { document.getElementById('inputModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('inputModal').style.display = 'none'; }
+    function switchTab(tabName) {
+        // Hide all pages
+        document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
 
-    document.getElementById('txForm').addEventListener('submit', function(e) {
+        // Show targeted page
+        document.getElementById('sheet-' + tabName).classList.add('active');
+        document.getElementById('btn-' + tabName).classList.add('active');
+
+        if(tabName === 'cashflow') renderCashflow();
+        if(tabName === 'transaksi') renderHistory();
+    }
+
+    document.getElementById('formTx').addEventListener('submit', function(e) {
         e.preventDefault();
         const keterangan = document.getElementById('keterangan').value.trim();
         const jumlah = parseInt(document.getElementById('jumlah').value, 10);
         const jenis = document.getElementById('jenis').value;
         const now = new Date();
-        const tanggal = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const waktu = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
         if(!keterangan || isNaN(jumlah) || jumlah <= 0) return;
 
-        db.push({ id: Date.now(), keterangan, jumlah, jenis, tanggal });
-        localStorage.setItem('dompet_dark_db', JSON.stringify(db));
+        db.push({ id: Date.now(), keterangan, jumlah, jenis, waktu });
+        localStorage.setItem('keuangan_3sheet_db', JSON.stringify(db));
 
-        closeModal();
         this.reset();
-        renderApp();
+        alert('Transaksi Berhasil Disimpan!');
+        renderHistory();
     });
 
-    function renderApp() {
-        const txList = document.getElementById('txList');
-        txList.innerHTML = '';
-
-        let totalIn = 0;
-        let totalOut = 0;
-
-        db.forEach(tx => {
-            if(tx.jenis === 'pemasukan') totalIn += tx.jumlah;
-            else totalOut += tx.jumlah;
-
-            const isInc = tx.jenis === 'pemasukan';
-            const itemHtml = `
-                <div class="tx-item">
-                    <div class="tx-left">
-                        <div class="tx-icon">${isInc ? '🛒' : '💸'}</div>
-                        <div>
-                            <div class="tx-title">${tx.keterangan}</div>
-                            <div class="tx-date">${tx.tanggal}</div>
-                        </div>
-                    </div>
-                    <div class="tx-amount ${isInc ? 'amount-in' : 'amount-out'}">
-                        ${isInc ? '+' : '-'}${formatRupiah(tx.jumlah)}
-                    </div>
-                </div>
-            `;
-            txList.insertAdjacentHTML('afterbegin', itemHtml);
+    function renderCashflow() {
+        let inc = 0, exp = 0;
+        db.forEach(item => {
+            if(item.jenis === 'pemasukan') inc += item.jumlah;
+            else exp += item.jumlah;
         });
 
-        document.getElementById('totalBalance').innerText = formatRupiah(totalIn - totalOut);
-        document.getElementById('statIn').innerText = formatRupiah(totalIn);
-        document.getElementById('statOut').innerText = formatRupiah(totalOut);
+        document.getElementById('sumIncome').innerText = formatRp(inc);
+        document.getElementById('sumExpense').innerText = formatRp(exp);
+        document.getElementById('sumTotal').innerText = formatRp(inc - exp);
 
-        updateChart(totalIn, totalOut);
-    }
+        // Render Donut Chart
+        const ctx = document.getElementById('cashflowChart').getContext('2d');
+        if(donutChart) donutChart.destroy();
 
-    function updateChart(totalIn, totalOut) {
-        const ctx = document.getElementById('financeChart').getContext('2d');
-        
-        if (myChart) myChart.destroy();
-
-        myChart = new Chart(ctx, {
-            type: 'line',
+        donutChart = new Chart(ctx, {
+            type: 'doughnut',
             data: {
                 labels: ['Pemasukan', 'Pengeluaran'],
                 datasets: [{
-                    label: 'Nominal',
-                    data: [totalIn, totalOut],
-                    borderColor: '#00f2fe',
-                    backgroundColor: 'rgba(0, 242, 254, 0.2)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#00f2fe',
-                    pointRadius: 6
+                    data: [inc || 1, exp || 0],
+                    backgroundColor: ['#bbf7d0', '#e9d5ff'],
+                    borderWidth: 0
                 }]
             },
             options: {
+                cutout: '75%',
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
-                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }
 
-    function resetData() {
-        if(confirm('Hapus semua data transaksi?')) {
-            localStorage.removeItem('dompet_dark_db');
-            db = [];
-            renderApp();
+    function renderHistory() {
+        const listContainer = document.getElementById('historyList');
+        listContainer.innerHTML = '';
+
+        if(db.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; font-size:12px; color:#94a3b8; padding:15px;">Belum ada riwayat transaksi.</div>';
+            return;
         }
+
+        db.slice().reverse().forEach(item => {
+            const isInc = item.jenis === 'pemasukan';
+            const html = `
+                <div class="tx-item">
+                    <div class="tx-left">
+                        <div class="tx-avatar">${isInc ? '🛍️' : '💸'}</div>
+                        <div>
+                            <div class="tx-name">${item.keterangan}</div>
+                            <div class="tx-time">${item.waktu}</div>
+                        </div>
+                    </div>
+                    <div class="tx-val ${isInc ? 'val-in' : 'val-out'}">
+                        ${isInc ? '+' : '-'}${formatRp(item.jumlah)}
+                    </div>
+                </div>
+            `;
+            listContainer.insertAdjacentHTML('beforeend', html);
+        });
     }
 
-    renderApp();
+    // Initial Load
+    renderHistory();
 </script>
 
 </body>
