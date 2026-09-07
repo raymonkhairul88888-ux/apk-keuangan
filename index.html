@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aplikasi Keuangan</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Library Chart.js untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { 
       background-color: #e2e8f0; 
@@ -46,30 +48,37 @@
     <!-- Kontainer Wajib untuk React di CodeSandbox -->
     <div id="root"></div>
 
-    <!-- ==================== TAMPILAN 1: DASHBOARD / UTAMA ==================== -->
+    <!-- ==================== TAMPILAN 1: DASHBOARD UTAMA ==================== -->
     <div id="tampilanUtama" class="space-y-4 flex-1">
       
-      <!-- Card Tanpa Nominal -->
-      <div class="app-card p-5 rounded-[24px] shadow-md space-y-2 relative cursor-pointer" onclick="bukaHalaman('tampilanForm')">
+      <!-- Card Tombol Menuju Tampilan 2 (Input Transaksi) -->
+      <div class="app-card p-5 rounded-[24px] shadow-md space-y-2 relative cursor-pointer hover:opacity-95 transition" onclick="bukaHalaman('tampilanForm')">
         <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
           <span>CATATAN ASISTEN</span>
         </div>
         
         <div class="flex justify-between items-center pt-1">
-          <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN</p>
-          <span class="text-xl opacity-80">&rsaquo;</span>
+          <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN &rsaquo;</p>
+          <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">+ TAMBAH</span>
         </div>
       </div>
 
-      <!-- Tombol Menuju Tampilan 2 (Tambah Transaksi) -->
-      <button onclick="bukaHalaman('tampilanForm')" class="btn-primary w-full p-3 rounded-2xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
-        <span class="text-base font-bold">+</span> TAMBAH TRANSAKSI BARU
-      </button>
+      <!-- GRAFIK KEUANGAN (Pengganti Tombol Tambah Transaksi) -->
+      <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 shadow-sm space-y-2">
+        <div class="flex justify-between items-center">
+          <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">GRAFIK KEUANGAN</h3>
+          <span id="labelTotalTransaksi" class="text-[10px] font-bold text-slate-400">0 Transaksi</span>
+        </div>
+        
+        <div class="relative flex items-center justify-center h-44 w-full pt-1">
+          <canvas id="grafikKeuangan"></canvas>
+        </div>
+      </div>
 
-      <hr class="border-slate-100 my-2" />
+      <hr class="border-slate-100 my-1" />
 
       <!-- Filter Tab & List Transaksi -->
-      <div class="space-y-3 px-1">
+      <div class="space-y-2 px-1">
         <div class="flex space-x-5 text-xs border-b border-slate-100 pb-2">
           <button onclick="setFilter('SEMUA')" id="tab-SEMUA" class="tab-active pb-1 text-[11px]">SEMUA</button>
           <button onclick="setFilter('Keluar')" id="tab-Keluar" class="text-slate-400 font-semibold pb-1 text-[11px]">KELUAR</button>
@@ -77,7 +86,7 @@
         </div>
 
         <!-- Riwayat Transaksi List -->
-        <ul id="daftarTransaksi" class="space-y-3 text-xs max-h-[320px] overflow-y-auto pr-1">
+        <ul id="daftarTransaksi" class="space-y-2 text-xs max-h-[180px] overflow-y-auto pr-1">
           <li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>
         </ul>
       </div>
@@ -96,7 +105,7 @@
         <div class="w-8"></div>
       </div>
 
-      <!-- Card Ringkasan Nominal Pembukuan (Dipindahkan ke Sini) -->
+      <!-- Card Ringkasan Nominal Pembukuan -->
       <div class="app-card p-5 rounded-[24px] shadow-md space-y-2 relative">
         <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
           <span>CATATAN ASISTEN</span>
@@ -113,8 +122,8 @@
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jenis Transaksi</label>
           <select id="jenis" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
-            <option value="Keluar">Uang Keluar (-)</option>
             <option value="Masuk">Uang Masuk (+)</option>
+            <option value="Keluar">Uang Keluar (-)</option>
           </select>
         </div>
 
@@ -125,16 +134,16 @@
 
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
-          <input type="text" id="keterangan" placeholder="Keterangan (misal: Jajan)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+          <input type="text" id="keterangan" placeholder="Keterangan (misal: Gaji)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
         </div>
 
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
           <select id="kategori" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
-            <option value="Gaji">Gaji</option>
-            <option value="Belanja">Belanja</option>
-            <option value="Restoran">Restoran</option>
-            <option value="Transport">Transport</option>
+            <option value="GAJI">Gaji</option>
+            <option value="BELANJA">Belanja</option>
+            <option value="RESTORAN">Restoran</option>
+            <option value="TRANSPORT">Transport</option>
           </select>
         </div>
 
@@ -149,10 +158,24 @@
 
   </div>
 
-  <!-- Script Logika Aplikasi -->
+  <!-- Script Logika Aplikasi & Grafik -->
   <script>
-    let dataTransaksi = JSON.parse(localStorage.getItem('keuangan_db')) || [];
+    // Data bawaan awal sesuai gambar permintaan
+    const dataAwal = [
+      { keterangan: 'GAJI', nominal: 89000000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
+      { keterangan: 'UANG SEKOLAH', nominal: 15200000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
+      { keterangan: 'JAJAN', nominal: 56225145, jenis: 'Keluar', kategori: 'GAJI', tanggal: '8 SEP' },
+      { keterangan: 'JAJAN', nominal: 13000000, jenis: 'Keluar', kategori: 'GAJI', tanggal: '8 SEP' },
+      { keterangan: 'GAJI', nominal: 22000000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' }
+    ];
+
+    let dataTransaksi = JSON.parse(localStorage.getItem('keuangan_db'));
+    if (!dataTransaksi || dataTransaksi.length === 0) {
+      dataTransaksi = dataAwal;
+    }
+
     let filterAktif = 'SEMUA';
+    let chartInstance = null;
 
     function formatRupiah(angka) {
       const isMinus = angka < 0;
@@ -164,7 +187,6 @@
     function bukaHalaman(halamanId) {
       document.getElementById('tampilanUtama').classList.add('hidden');
       document.getElementById('tampilanForm').classList.add('hidden');
-      
       document.getElementById(halamanId).classList.remove('hidden');
     }
 
@@ -179,6 +201,51 @@
         }
       });
       updateUI();
+    }
+
+    function renderGrafik() {
+      const ctx = document.getElementById('grafikKeuangan').getContext('2d');
+      
+      let masuk = 0;
+      let keluar = 0;
+
+      dataTransaksi.forEach(item => {
+        if (item.jenis === 'Masuk') masuk += item.nominal;
+        if (item.jenis === 'Keluar') keluar += item.nominal;
+      });
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Pemasukan', 'Pengeluaran'],
+          datasets: [{
+            data: [masuk || 1, keluar || 0],
+            backgroundColor: ['#2da2b5', '#0d4b56'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                font: { size: 10, weight: 'bold' }
+              }
+            }
+          },
+          cutout: '65%'
+        }
+      });
+
+      document.getElementById('labelTotalTransaksi').innerText = dataTransaksi.length + ' Transaksi';
     }
 
     function updateUI() {
@@ -205,7 +272,7 @@
       } else {
         dataFiltered.forEach((item, index) => {
           const li = document.createElement('li');
-          li.className = 'flex justify-between items-center py-1.5 border-b border-dashed border-slate-100 last:border-none';
+          li.className = 'flex justify-between items-center py-1 border-b border-dashed border-slate-100 last:border-none';
           
           const isKeluar = item.jenis === 'Keluar';
           const tAnda = isKeluar ? '- ' : '+ ';
@@ -213,14 +280,14 @@
 
           li.innerHTML = `
             <div>
-              <p class="font-extrabold text-slate-800 uppercase text-[12px] leading-tight">${item.keterangan}</p>
-              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">${item.kategori || 'UMUM'} &bull; ${item.tanggal}</p>
+              <p class="font-extrabold text-slate-800 uppercase text-[11px] leading-tight">${item.keterangan}</p>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">${item.kategori || 'GAJI'} &bull; ${item.tanggal}</p>
             </div>
             <div class="text-right">
-              <p class="font-extrabold ${warnaTeks} text-[12px]">
+              <p class="font-extrabold ${warnaTeks} text-[11px]">
                 ${tAnda}${formatRupiah(item.nominal)}
               </p>
-              <button onclick="hapusSatu(${index})" class="text-[9px] text-slate-300 hover:text-rose-500">Hapus</button>
+              <button onclick="hapusSatu(${index})" class="text-[8px] text-slate-300 hover:text-rose-500">Hapus</button>
             </div>
           `;
           daftar.appendChild(li);
@@ -228,6 +295,7 @@
       }
 
       localStorage.setItem('keuangan_db', JSON.stringify(dataTransaksi));
+      renderGrafik();
     }
 
     function tambahTransaksi() {
@@ -242,7 +310,7 @@
       }
 
       const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }).toUpperCase();
-      dataTransaksi.unshift({ keterangan: ket, nominal: nom, jenis: jns, kategori: kat, tanggal: tgl });
+      dataTransaksi.unshift({ keterangan: ket.toUpperCase(), nominal: nom, jenis: jns, kategori: kat, tanggal: tgl });
 
       document.getElementById('keterangan').value = '';
       document.getElementById('nominal').value = '';
