@@ -3,101 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REMON KEUANGAN</title>
+    <title>Dompet Digital</title>
+    <!-- Chart.js CDN untuk Grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #e0e0e0; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background: #f0f0f0; min-height: 100vh; position: relative; padding-bottom: 80px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #0f172a; color: #ffffff; display: flex; justify-content: center; min-height: 100vh; }
         
-        /* Header & Navigation Bar */
-        .app-header { background-color: #546e7a; color: white; text-align: center; padding: 14px; font-weight: bold; font-size: 16px; }
-        .nav-tabs { display: flex; background-color: #607d8b; }
-        .tab-btn { flex: 1; padding: 12px; text-align: center; color: #cfd8dc; font-weight: bold; font-size: 13px; border: none; background: none; cursor: pointer; }
-        .tab-btn.active { color: white; border-bottom: 3px solid #ffffff; background-color: #546e7a; }
-
-        /* Content Sections */
-        .tab-content { display: none; padding: 12px; }
-        .tab-content.active { display: block; }
-
-        /* Cards & Styling */
-        .card { background: white; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
-        .card-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; font-size: 13px; color: #444; }
-        .tx-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px dashed #f0f0f0; }
-        .tx-item:last-child { border-bottom: none; }
+        .app-container { width: 100%; max-width: 420px; background: #1e293b; min-height: 100vh; position: relative; padding: 20px 16px 90px 16px; border-radius: 16px; }
         
-        /* Colors */
-        .text-in { color: #2e7d32; font-weight: bold; }
-        .text-out { color: #d32f2f; font-weight: bold; }
-        .text-net { color: #2e7d32; font-weight: bold; font-size: 16px; }
+        /* Profile Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 48px; height: 48px; background: #00f2fe; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #0f172a; font-weight: bold; }
+        .user-name h3 { font-size: 16px; font-weight: 600; }
+        .user-name p { font-size: 12px; color: #94a3b8; }
+        .menu-btn { background: #334155; border: none; width: 40px; height: 40px; border-radius: 10px; color: white; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
 
-        /* Action Buttons */
-        .btn-add { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #ccc; padding: 10px 28px; border-radius: 20px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.2); cursor: pointer; z-index: 10; font-size: 14px; }
+        /* Total Balance Card */
+        .balance-section { text-align: center; margin-bottom: 20px; }
+        .balance-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+        .total-balance { font-size: 32px; font-weight: 700; color: #ffffff; margin-bottom: 16px; }
         
-        /* Modal Form Input */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 8px; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #666; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        .btn-submit { width: 100%; padding: 10px; background: #546e7a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .stats-grid { display: flex; justify-content: space-around; gap: 10px; }
+        .stat-card { flex: 1; background: #334155; padding: 12px; border-radius: 14px; display: flex; align-items: center; gap: 10px; }
+        .stat-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; }
+        .stat-in { background: rgba(0, 242, 254, 0.15); color: #00f2fe; }
+        .stat-out { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .stat-info p { font-size: 10px; color: #94a3b8; }
+        .stat-info h4 { font-size: 13px; font-weight: 600; }
+
+        /* Chart Section */
+        .chart-card { background: #334155; padding: 16px; border-radius: 18px; margin-bottom: 20px; }
+        .chart-container { width: 100%; height: 160px; }
+
+        /* Recent Transactions */
+        .section-title { font-size: 14px; font-weight: 600; color: #cbd5e1; margin-bottom: 12px; }
+        .tx-list { display: flex; flex-direction: column; gap: 10px; }
+        .tx-item { background: #334155; padding: 12px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .tx-left { display: flex; align-items: center; gap: 12px; }
+        .tx-icon { width: 38px; height: 38px; background: #00f2fe; border-radius: 50%; color: #0f172a; display: flex; justify-content: center; align-items: center; font-size: 16px; }
+        .tx-title { font-size: 13px; font-weight: 600; }
+        .tx-date { font-size: 11px; color: #94a3b8; }
+        .tx-amount { font-size: 13px; font-weight: 700; text-align: right; }
+        .amount-in { color: #00f2fe; }
+        .amount-out { color: #ef4444; }
+
+        /* Navigation Bar Bottom */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: #0f172a; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-icon { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; }
+        .nav-icon.active { color: #00f2fe; }
+        .add-btn { width: 54px; height: 54px; background: #00f2fe; border: none; border-radius: 50%; color: #0f172a; font-size: 26px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); margin-top: -25px; }
+
+        /* Modal Input */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: #1e293b; width: 90%; max-width: 380px; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
+        .modal-content h3 { margin-bottom: 16px; color: #fff; font-size: 16px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 8px; color: white; font-size: 13px; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+        .btn-cancel { flex: 1; padding: 10px; background: transparent; border: 1px solid #475569; color: #cbd5e1; border-radius: 8px; cursor: pointer; }
+        .btn-save { flex: 1; padding: 10px; background: #00f2fe; border: none; color: #0f172a; font-weight: bold; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="app-header">ASISTEN KEUANGAN </div>
-    
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('utama', this)">UTAMA</button>
-        <button class="tab-btn" onclick="switchTab('laporan', this)">LAPORAN</button>
-        <button class="tab-btn" onclick="switchTab('setelan', this)">SETELAN</button>
-    </div>
-
-    <!-- TAB UTAMA -->
-    <div id="tab-utama" class="tab-content active">
-        <div id="daftar-transaksi-harian"></div>
-        <button class="btn-add" onclick="openModal()">+ Tambah</button>
-    </div>
-
-    <!-- TAB LAPORAN -->
-    <div id="tab-laporan" class="tab-content">
-        <div class="card">
-            <div class="card-header"><b>Ringkasan Total</b></div>
-            <div class="tx-item"><span>Pengeluaran</span><span id="rep-out" class="text-out">Rp 0</span></div>
-            <div class="tx-item"><span>Pemasukan</span><span id="rep-in" class="text-in">Rp 0</span></div>
-            <div class="tx-item" style="margin-top:6px; padding-top:6px; border-top:1px solid #eee;">
-                <span><b>Selisih</b></span><span id="rep-net" class="text-net">Rp 0</span>
+    <!-- Header -->
+    <div class="header">
+        <div class="user-info">
+            <div class="avatar">👤</div>
+            <div class="user-name">
+                <h3>Pengguna</h3>
+                <p>Dompet Utama</p>
             </div>
         </div>
+        <button class="menu-btn" onclick="resetData()">⚙️</button>
+    </div>
 
-        <div class="card">
-            <div class="card-header"><b>Top Kategori Pengeluaran</b></div>
-            <div id="top-out-list"></div>
-        </div>
-
-        <div class="card">
-            <div class="card-header"><b>Top Kategori Pemasukan</b></div>
-            <div id="top-in-list"></div>
+    <!-- Balance -->
+    <div class="balance-section">
+        <p class="balance-label">Total Saldo</p>
+        <div class="total-balance" id="totalBalance">Rp 0</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stat-in">↑</div>
+                <div class="stat-info">
+                    <p>Pemasukan</p>
+                    <h4 id="statIn" class="amount-in">Rp 0</h4>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-out">↓</div>
+                <div class="stat-info">
+                    <p>Pengeluaran</p>
+                    <h4 id="statOut" class="amount-out">Rp 0</h4>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- TAB SETELAN -->
-    <div id="tab-setelan" class="tab-content">
-        <div class="card">
-            <div class="card-header"><b>Pengaturan Data</b></div>
-            <button onclick="resetData()" style="width:100%; padding:10px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Hapus Semua Data</button>
+    <!-- Chart -->
+    <div class="chart-card">
+        <div class="chart-container">
+            <canvas id="financeChart"></canvas>
         </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="section-title">Riwayat Transaksi</div>
+    <div class="tx-list" id="txList"></div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-icon active">🏠</button>
+        <button class="add-btn" onclick="openModal()">+</button>
+        <button class="nav-icon" onclick="resetData()">🗑️</button>
     </div>
 </div>
 
-<!-- Modal Form Input -->
+<!-- Modal Form -->
 <div class="modal" id="inputModal">
     <div class="modal-content">
-        <h3 style="margin-bottom:15px; color:#333;">Tambah Transaksi</h3>
+        <h3>Tambah Transaksi Baru</h3>
         <form id="txForm">
             <div class="form-group">
-                <label>Keterangan / Kategori</label>
-                <input type="text" id="keterangan" placeholder="Contoh: Gaji, Makan, Transport" required>
+                <label>Keterangan</label>
+                <input type="text" id="keterangan" placeholder="Contoh: Belanja / Gaji" required>
             </div>
             <div class="form-group">
                 <label>Nominal (Rp)</label>
@@ -106,33 +140,24 @@
             <div class="form-group">
                 <label>Jenis Transaksi</label>
                 <select id="jenis">
-                    <option value="pemasukan">Pemasukan</option>
-                    <option value="pengeluaran">Pengeluaran</option>
+                    <option value="pemasukan">Pemasukan (+)</option>
+                    <option value="pengeluaran">Pengeluaran (-)</option>
                 </select>
             </div>
-            <div style="display:flex; gap:10px;">
-                <button type="button" onclick="closeModal()" style="flex:1; padding:10px; border:1px solid #ccc; background:white; border-radius:4px; font-weight:bold;">Batal</button>
-                <button type="submit" class="btn-submit" style="flex:1;">Simpan</button>
+            <div class="modal-btns">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Batal</button>
+                <button type="submit" class="btn-save">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('catatan_keuangan')) || [];
+    let db = JSON.parse(localStorage.getItem('dompet_dark_db')) || [];
+    let myChart = null;
 
     function formatRupiah(angka) {
         return 'Rp ' + Number(angka).toLocaleString('id-ID');
-    }
-
-    function switchTab(tabName, el) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
-        el.classList.add('active');
-        document.getElementById('tab-' + tabName).classList.add('active');
-
-        if(tabName === 'laporan') renderLaporan();
     }
 
     function openModal() { document.getElementById('inputModal').style.display = 'flex'; }
@@ -143,131 +168,96 @@
         const keterangan = document.getElementById('keterangan').value.trim();
         const jumlah = parseInt(document.getElementById('jumlah').value, 10);
         const jenis = document.getElementById('jenis').value;
-        
         const now = new Date();
-        const opsiTanggal = { year: 'numeric', month: 'short', day: 'numeric' };
-        const tanggal = now.toLocaleDateString('id-ID', opsiTanggal);
+        const tanggal = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-        if(!keterangan || isNaN(jumlah) || jumlah <= 0) {
-            alert('Mohon isi keterangan dan nominal angka dengan benar.');
-            return;
-        }
+        if(!keterangan || isNaN(jumlah) || jumlah <= 0) return;
 
         db.push({ id: Date.now(), keterangan, jumlah, jenis, tanggal });
-        localStorage.setItem('catatan_keuangan', JSON.stringify(db));
-        
+        localStorage.setItem('dompet_dark_db', JSON.stringify(db));
+
         closeModal();
         this.reset();
-        renderUtama();
+        renderApp();
     });
 
-    function renderUtama() {
-        const container = document.getElementById('daftar-transaksi-harian');
-        container.innerHTML = '';
+    function renderApp() {
+        const txList = document.getElementById('txList');
+        txList.innerHTML = '';
 
-        if(db.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#888; margin-top:40px;">Belum ada transaksi.</div>';
-            return;
-        }
-
-        const groups = db.reduce((acc, tx) => {
-            acc[tx.tanggal] = acc[tx.tanggal] || [];
-            acc[tx.tanggal].push(tx);
-            return acc;
-        }, {});
-
-        for (const tgl in groups) {
-            let totalIn = 0, totalOut = 0;
-            let itemsHtml = '';
-
-            groups[tgl].forEach(tx => {
-                if(tx.jenis === 'pemasukan') totalIn += tx.jumlah;
-                else totalOut += tx.jumlah;
-
-                itemsHtml += `
-                    <div class="tx-item">
-                        <span>${tx.keterangan}</span>
-                        <span class="${tx.jenis === 'pemasukan' ? 'text-in' : 'text-out'}">${tx.jenis === 'pemasukan' ? '+' : '-'} ${formatRupiah(tx.jumlah)}</span>
-                    </div>
-                `;
-            });
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-header">
-                    <span><b>Hari Ini, ${tgl}</b></span>
-                    <span>
-                        <span class="text-out" style="margin-right:8px;">${formatRupiah(totalOut)}</span>
-                        <span class="text-in">${formatRupiah(totalIn)}</span>
-                    </span>
-                </div>
-                ${itemsHtml}
-            `;
-            container.appendChild(card);
-        }
-    }
-
-    function renderLaporan() {
-        let totalIn = 0, totalOut = 0;
-        let katOut = {}, katIn = {};
+        let totalIn = 0;
+        let totalOut = 0;
 
         db.forEach(tx => {
-            if(tx.jenis === 'pemasukan') {
-                totalIn += tx.jumlah;
-                katIn[tx.keterangan] = (katIn[tx.keterangan] || 0) + tx.jumlah;
-            } else {
-                totalOut += tx.jumlah;
-                katOut[tx.keterangan] = (katOut[tx.keterangan] || 0) + tx.jumlah;
-            }
-        });
+            if(tx.jenis === 'pemasukan') totalIn += tx.jumlah;
+            else totalOut += tx.jumlah;
 
-        document.getElementById('rep-in').innerText = formatRupiah(totalIn);
-        document.getElementById('rep-out').innerText = formatRupiah(totalOut);
-        
-        const selisih = totalIn - totalOut;
-        const repNet = document.getElementById('rep-net');
-        repNet.innerText = formatRupiah(selisih);
-        if(selisih < 0) {
-            repNet.className = 'text-out';
-        } else {
-            repNet.className = 'text-in';
-        }
-
-        renderTopList('top-out-list', katOut);
-        renderTopList('top-in-list', katIn);
-    }
-
-    function renderTopList(elementId, dataObj) {
-        const el = document.getElementById(elementId);
-        el.innerHTML = '';
-        const sorted = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
-
-        if(sorted.length === 0) {
-            el.innerHTML = '<div style="font-size:12px; color:#888; padding: 4px 0;">Tidak ada data</div>';
-            return;
-        }
-
-        sorted.forEach(([kat, total]) => {
-            el.innerHTML += `
+            const isInc = tx.jenis === 'pemasukan';
+            const itemHtml = `
                 <div class="tx-item">
-                    <span>${kat}</span>
-                    <span>${formatRupiah(total)}</span>
+                    <div class="tx-left">
+                        <div class="tx-icon">${isInc ? '🛒' : '💸'}</div>
+                        <div>
+                            <div class="tx-title">${tx.keterangan}</div>
+                            <div class="tx-date">${tx.tanggal}</div>
+                        </div>
+                    </div>
+                    <div class="tx-amount ${isInc ? 'amount-in' : 'amount-out'}">
+                        ${isInc ? '+' : '-'}${formatRupiah(tx.jumlah)}
+                    </div>
                 </div>
             `;
+            txList.insertAdjacentHTML('afterbegin', itemHtml);
+        });
+
+        document.getElementById('totalBalance').innerText = formatRupiah(totalIn - totalOut);
+        document.getElementById('statIn').innerText = formatRupiah(totalIn);
+        document.getElementById('statOut').innerText = formatRupiah(totalOut);
+
+        updateChart(totalIn, totalOut);
+    }
+
+    function updateChart(totalIn, totalOut) {
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Pemasukan', 'Pengeluaran'],
+                datasets: [{
+                    label: 'Nominal',
+                    data: [totalIn, totalOut],
+                    borderColor: '#00f2fe',
+                    backgroundColor: 'rgba(0, 242, 254, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#00f2fe',
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+                    y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                }
+            }
         });
     }
 
     function resetData() {
-        if(confirm('Apakah Anda yakin ingin menghapus semua catatan keuangan?')) {
-            localStorage.removeItem('catatan_keuangan');
+        if(confirm('Hapus semua data transaksi?')) {
+            localStorage.removeItem('dompet_dark_db');
             db = [];
-            renderUtama();
-            alert('Data berhasil dihapus.');
+            renderApp();
         }
     }
 
-    renderUtama();
+    renderApp();
 </script>
 
 </body>
