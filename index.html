@@ -6,70 +6,130 @@
   <title>Aplikasi Keuangan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, sans-serif; }
-    .card { background-color: #1e293b; border: 1px solid #334155; }
-    .input-field { background-color: #0f172a; border: 1px solid #334155; color: #fff; }
+    body { 
+      background-color: #e2e8f0; 
+      color: #0f172a; 
+      font-family: system-ui, -apple-system, sans-serif; 
+    }
+    .app-card { 
+      background-color: #0d4b56; 
+      color: #ffffff; 
+    }
+    .btn-primary { 
+      background-color: #0d4b56; 
+      color: #ffffff; 
+    }
+    .btn-primary:hover { 
+      background-color: #093740; 
+    }
+    .input-custom { 
+      background-color: #ffffff; 
+      border: 1px solid #cbd5e1; 
+      color: #1e293b; 
+    }
+    .input-custom:focus { 
+      outline: none; 
+      border-color: #0d4b56; 
+    }
+    .tab-active { 
+      border-bottom: 2px solid #0d4b56; 
+      color: #0d4b56; 
+      font-weight: 700; 
+    }
   </style>
 </head>
-<body class="p-4 max-w-md mx-auto space-y-4">
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
 
-  <!-- Kontainer Wajib untuk React di CodeSandbox -->
-  <div id="root"></div>
-
-  <!-- Header & Saldo -->
-  <div class="card p-5 rounded-2xl shadow-lg space-y-2">
-    <h1 class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Saldo Saat Ini</h1>
-    <h2 id="saldoTotal" class="text-3xl font-extrabold text-indigo-400">Rp 0</h2>
+  <!-- Container Bingkai HP (Mockup Screen) -->
+  <div class="w-full max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden p-4 space-y-4 border border-slate-200">
     
-    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700/50">
-      <div>
-        <p class="text-[10px] text-slate-400">Pemasukan</p>
-        <p id="totalMasuk" class="text-sm font-bold text-emerald-400">Rp 0</p>
+    <!-- Container Wajib untuk React di CodeSandbox (Jika diperlukan) -->
+    <div id="root"></div>
+
+    <!-- Header & Kartu Rekening Utama -->
+    <div class="app-card p-5 rounded-[24px] shadow-md space-y-3 relative">
+      <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
+        <span>REKENING UTAMA</span>
       </div>
+      
       <div>
-        <p class="text-[10px] text-slate-400">Pengeluaran</p>
-        <p id="totalKeluar" class="text-sm font-bold text-rose-400">Rp 0</p>
+        <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL SALDO</p>
+        <div class="flex justify-between items-center">
+          <h2 id="saldoTotal" class="text-3xl font-extrabold tracking-tight">Rp 0</h2>
+          <span class="text-xl opacity-80 cursor-pointer">&rsaquo;</span>
+        </div>
       </div>
+      
+      <p class="text-[11px] font-mono tracking-widest opacity-60 pt-2">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 5643</p>
     </div>
-  </div>
 
-  <!-- Form Input Transaksi -->
-  <div class="card p-5 rounded-2xl shadow-lg space-y-3">
-    <h3 class="text-sm font-bold text-slate-200">Tambah Transaksi Baru</h3>
-    
-    <div class="space-y-2">
-      <input type="text" id="keterangan" placeholder="Keterangan (misal: Beli Kopi)" class="input-field w-full p-2.5 rounded-xl text-xs outline-none focus:border-indigo-500" />
-      <input type="number" id="nominal" placeholder="Nominal (misal: 25000)" class="input-field w-full p-2.5 rounded-xl text-xs outline-none focus:border-indigo-500" />
+    <!-- Form Input Transaksi -->
+    <div class="space-y-2.5 px-1">
+      <p class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase flex items-center gap-1">
+        <span>+</span> TAMBAH TRANSAKSI BARU
+      </p>
       
       <div class="grid grid-cols-2 gap-2">
-        <select id="jenis" class="input-field p-2.5 rounded-xl text-xs outline-none">
-          <option value="Masuk">Pemasukan (+)</option>
-          <option value="Keluar">Pengeluaran (-)</option>
+        <select id="jenis" class="input-custom p-2.5 rounded-xl text-xs font-semibold">
+          <option value="Keluar">Uang Keluar (-)</option>
+          <option value="Masuk">Uang Masuk (+)</option>
         </select>
-        <button onclick="tambahTransaksi()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold p-2.5 rounded-xl text-xs transition">
-          Simpan
-        </button>
+        <input type="number" id="nominal" placeholder="Jumlah (Rp)" class="input-custom p-2.5 rounded-xl text-xs font-medium" />
       </div>
-    </div>
-  </div>
 
-  <!-- Riwayat Transaksi -->
-  <div class="card p-5 rounded-2xl shadow-lg space-y-3">
-    <div class="flex justify-between items-center">
-      <h3 class="text-sm font-bold text-slate-200">Riwayat Transaksi</h3>
-      <button onclick="resetData()" class="text-[10px] text-rose-400 hover:underline">Reset Data</button>
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="keterangan" placeholder="Keterangan (misal: Uber)" class="input-custom p-2.5 rounded-xl text-xs font-medium" />
+        <select id="kategori" class="input-custom p-2.5 rounded-xl text-xs font-semibold">
+          <option value="Belanja">Belanja</option>
+          <option value="Restoran">Restoran</option>
+          <option value="Transport">Transport</option>
+          <option value="Gaji">Gaji / Hasil</option>
+        </select>
+      </div>
+
+      <button onclick="tambahTransaksi()" class="btn-primary w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
+        Simpan Transaksi
+      </button>
     </div>
-    <ul id="daftarTransaksi" class="divide-y divide-slate-800 text-xs">
-      <li class="py-3 text-center text-slate-500">Belum ada transaksi.</li>
-    </ul>
+
+    <hr class="border-slate-100 my-2" />
+
+    <!-- Filter Tab & List Transaksi -->
+    <div class="space-y-3 px-1">
+      <div class="flex space-x-5 text-xs border-b border-slate-100 pb-2">
+        <button onclick="setFilter('SEMUA')" id="tab-SEMUA" class="tab-active pb-1 text-[11px]">SEMUA</button>
+        <button onclick="setFilter('Keluar')" id="tab-Keluar" class="text-slate-400 font-semibold pb-1 text-[11px]">KELUAR</button>
+        <button onclick="setFilter('Masuk')" id="tab-Masuk" class="text-slate-400 font-semibold pb-1 text-[11px]">MASUK</button>
+      </div>
+
+      <!-- Riwayat Transaksi List -->
+      <ul id="daftarTransaksi" class="space-y-3 text-xs max-h-[220px] overflow-y-auto pr-1">
+        <li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>
+      </ul>
+    </div>
+
   </div>
 
   <!-- Script Logika Aplikasi -->
   <script>
     let dataTransaksi = JSON.parse(localStorage.getItem('keuangan_db')) || [];
+    let filterAktif = 'SEMUA';
 
     function formatRupiah(angka) {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+    }
+
+    function setFilter(filter) {
+      filterAktif = filter;
+      ['SEMUA', 'Keluar', 'Masuk'].forEach(tab => {
+        const el = document.getElementById('tab-' + tab);
+        if (tab === filter) {
+          el.className = 'tab-active pb-1 text-[11px]';
+        } else {
+          el.className = 'text-slate-400 font-semibold pb-1 text-[11px]';
+        }
+      });
+      updateUI();
     }
 
     function updateUI() {
@@ -79,34 +139,44 @@
       let masuk = 0;
       let keluar = 0;
 
-      if (dataTransaksi.length === 0) {
-        daftar.innerHTML = '<li class="py-3 text-center text-slate-500">Belum ada transaksi.</li>';
-      } else {
-        dataTransaksi.forEach((item, index) => {
-          if (item.jenis === 'Masuk') masuk += item.nominal;
-          if (item.jenis === 'Keluar') keluar += item.nominal;
+      dataTransaksi.forEach(item => {
+        if (item.jenis === 'Masuk') masuk += item.nominal;
+        if (item.jenis === 'Keluar') keluar += item.nominal;
+      });
 
+      document.getElementById('saldoTotal').innerText = formatRupiah(masuk - keluar);
+
+      const dataFiltered = dataTransaksi.filter(item => {
+        if (filterAktif === 'SEMUA') return true;
+        return item.jenis === filterAktif;
+      });
+
+      if (dataFiltered.length === 0) {
+        daftar.innerHTML = '<li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>';
+      } else {
+        dataFiltered.forEach((item, index) => {
           const li = document.createElement('li');
-          li.className = 'py-2.5 flex justify-between items-center';
+          li.className = 'flex justify-between items-center py-1 border-b border-dashed border-slate-100 last:border-none';
+          
+          const isKeluar = item.jenis === 'Keluar';
+          const tAnda = isKeluar ? '- ' : '+ ';
+          const warnaTeks = isKeluar ? 'text-rose-500' : 'text-emerald-600';
+
           li.innerHTML = `
             <div>
-              <p class="font-medium text-slate-200">${item.keterangan}</p>
-              <p class="text-[10px] text-slate-500">${item.tanggal}</p>
+              <p class="font-extrabold text-slate-800 uppercase text-[12px] leading-tight">${item.keterangan}</p>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">${item.kategori || 'UMUM'} &bull; ${item.tanggal}</p>
             </div>
             <div class="text-right">
-              <p class="font-bold ${item.jenis === 'Masuk' ? 'text-emerald-400' : 'text-rose-400'}">
-                ${item.jenis === 'Masuk' ? '+' : '-'} ${formatRupiah(item.nominal)}
+              <p class="font-extrabold ${warnaTeks} text-[12px]">
+                ${tAnda}${formatRupiah(item.nominal)}
               </p>
-              <button onclick="hapusSatu(${index})" class="text-[9px] text-slate-600 hover:text-rose-400">Hapus</button>
+              <button onclick="hapusSatu(${index})" class="text-[9px] text-slate-300 hover:text-rose-500">Hapus</button>
             </div>
           `;
           daftar.appendChild(li);
         });
       }
-
-      document.getElementById('totalMasuk').innerText = formatRupiah(masuk);
-      document.getElementById('totalKeluar').innerText = formatRupiah(keluar);
-      document.getElementById('saldoTotal').innerText = formatRupiah(masuk - keluar);
 
       localStorage.setItem('keuangan_db', JSON.stringify(dataTransaksi));
     }
@@ -115,14 +185,15 @@
       const ket = document.getElementById('keterangan').value.trim();
       const nom = Number(document.getElementById('nominal').value);
       const jns = document.getElementById('jenis').value;
+      const kat = document.getElementById('kategori').value;
 
       if (!ket || !nom || nom <= 0) {
         alert('Mohon isi keterangan dan nominal dengan benar!');
         return;
       }
 
-      const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-      dataTransaksi.unshift({ keterangan: ket, nominal: nom, jenis: jns, tanggal: tgl });
+      const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }).toUpperCase();
+      dataTransaksi.unshift({ keterangan: ket, nominal: nom, jenis: jns, kategori: kat, tanggal: tgl });
 
       document.getElementById('keterangan').value = '';
       document.getElementById('nominal').value = '';
@@ -132,13 +203,6 @@
     function hapusSatu(index) {
       dataTransaksi.splice(index, 1);
       updateUI();
-    }
-
-    function resetData() {
-      if (confirm('Yakin ingin menghapus semua data?')) {
-        dataTransaksi = [];
-        updateUI();
-      }
     }
 
     updateUI();
