@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Keuangan Digital - UI Mobile</title>
-    <!-- Chart.js untuk Grafik -->
+    <title>Aplikasi Keuangan Digital - Interaktif</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -24,7 +23,6 @@
             padding: 20px 10px;
         }
 
-        /* Navigasi Presentasi Layar */
         .presentation-tabs {
             position: fixed;
             top: 15px;
@@ -56,7 +54,6 @@
             color: #0f4c5c;
         }
 
-        /* Bingkai HP */
         .single-mobile-container {
             width: 360px;
             height: 720px;
@@ -120,407 +117,146 @@
             padding-top: 10px;
         }
 
-        .icon-menu {
-            width: 24px;
-            height: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-        }
+        .brand-title { font-size: 18px; font-weight: 800; letter-spacing: 2px; }
+        .user-profile { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
+        .avatar { width: 72px; height: 72px; border-radius: 50%; background: #111827; margin-bottom: 12px; border: 2px solid rgba(255, 255, 255, 0.6); overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .greeting { font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.9); margin-bottom: 20px; }
+        .pin-dots { display: flex; gap: 12px; margin-bottom: 15px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); }
+        .dot.filled { background: #ffffff; box-shadow: 0 0 8px #ffffff; }
+        
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; max-width: 270px; margin-bottom: 15px; }
+        .key-btn { aspect-ratio: 1; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.25); color: #ffffff; font-size: 20px; font-weight: 600; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.15s; }
+        .key-btn:active { background: rgba(255, 255, 255, 0.45); transform: scale(0.95); }
 
-        .icon-menu span {
-            display: block;
-            height: 2.5px;
-            width: 100%;
-            background-color: #ffffff;
-            border-radius: 2px;
-        }
-
-        .brand-title {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-
-        .icon-bell {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .bell-dot {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            width: 8px;
-            height: 8px;
-            background-color: #ef4444;
-            border-radius: 50%;
-            border: 1.5px solid #ffffff;
-        }
-
-        .user-profile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: #111827;
-            margin-bottom: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .greeting {
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 20px;
-        }
-
-        .pin-dots {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .dot.filled {
-            background: #ffffff;
-            box-shadow: 0 0 8px #ffffff;
-        }
-
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            width: 100%;
-            max-width: 270px;
-            margin-bottom: 15px;
-        }
-
-        .key-btn {
-            aspect-ratio: 1;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255, 255, 255, 0.25);
-            color: #ffffff;
-            font-size: 20px;
-            font-weight: 600;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.15s;
-        }
-
-        .key-btn:active {
-            background: rgba(255, 255, 255, 0.45);
-            transform: scale(0.95);
-        }
-
-        /* --- LAYAR 2: REKENING & TRANSAKSI --- */
+        /* --- LAYAR 2: DETAIL TRANSAKSI & INPUT DATA --- */
         .account-card {
             background: #0f4c5c;
             color: #ffffff;
-            padding: 30px 24px 35px 24px;
-            border-bottom-left-radius: 36px;
-            border-bottom-right-radius: 36px;
+            padding: 24px 20px 28px 20px;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
             box-shadow: 0 10px 25px rgba(15, 76, 92, 0.25);
         }
 
-        .acc-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
+        .acc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .acc-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; }
+        .balance-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 4px; }
+        .balance-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .balance-amount { font-size: 28px; font-weight: 700; }
+        .balance-arrow { font-size: 20px; cursor: pointer; opacity: 0.8; }
+        .card-number { font-size: 12px; letter-spacing: 3px; opacity: 0.85; font-family: monospace; }
+
+        /* Form Input Transaksi */
+        .transaction-form-box {
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .acc-title {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-        }
-
-        .acc-profile-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .acc-profile-icon::after {
-            content: '';
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #0f4c5c;
-        }
-
-        .balance-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            opacity: 0.8;
-            margin-bottom: 6px;
-        }
-
-        .balance-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .balance-amount {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .balance-arrow {
-            font-size: 20px;
-            cursor: pointer;
-            opacity: 0.8;
-        }
-
-        .card-number {
-            font-size: 13px;
-            letter-spacing: 3px;
-            opacity: 0.85;
-            font-family: monospace;
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 24px;
-            padding: 20px 24px 10px 24px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .filter-btn {
-            background: none;
-            border: none;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: #94a3b8;
-            cursor: pointer;
-            position: relative;
-            padding-bottom: 6px;
-        }
-
-        .filter-btn.active {
-            color: #0f4c5c;
-        }
-
-        .filter-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
+        .form-title { font-size: 11px; font-weight: 800; color: #0f4c5c; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        
+        .form-input, .form-select {
             width: 100%;
-            height: 2px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .btn-submit {
+            width: 100%;
             background: #0f4c5c;
-            border-radius: 2px;
-        }
-
-        .tx-container {
-            padding: 16px 24px;
-        }
-
-        .tx-group-title {
-            font-size: 11px;
+            color: #ffffff;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
-            color: #94a3b8;
-            margin-top: 10px;
-            margin-bottom: 12px;
+            cursor: pointer;
         }
 
-        .tx-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
+        .filter-tabs { display: flex; gap: 16px; padding: 12px 20px 6px 20px; }
+        .filter-btn { background: none; border: none; font-size: 11px; font-weight: 800; color: #94a3b8; cursor: pointer; position: relative; padding-bottom: 4px; }
+        .filter-btn.active { color: #0f4c5c; }
+        .filter-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: #0f4c5c; }
 
-        .tx-name {
-            font-size: 13px;
-            font-weight: 800;
-            color: #1e293b;
-        }
-
-        .tx-amount {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .tx-expense { color: #1e293b; }
+        .tx-container { padding: 10px 20px 20px 20px; }
+        .tx-group-title { font-size: 10px; font-weight: 700; color: #94a3b8; margin-top: 8px; margin-bottom: 8px; }
+        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #f1f5f9; }
+        .tx-name { font-size: 12px; font-weight: 800; color: #1e293b; }
+        .tx-cat { font-size: 10px; color: #64748b; }
+        .tx-amount { font-size: 12px; font-weight: 700; }
+        .tx-expense { color: #e11d48; }
         .tx-income { color: #0f4c5c; }
 
-        /* --- LAYAR 3: LAPORAN PENGELUARAN --- */
-        .exp-header {
-            display: flex;
-            align-items: center;
-            padding: 24px 24px 10px 24px;
-            position: relative;
-        }
+        /* --- LAYAR 3: RANGKUMAN DATA (RANGKUMAN SEMUA DATA) --- */
+        .exp-header { display: flex; align-items: center; padding: 20px 20px 10px 20px; position: relative; }
+        .back-icon { font-size: 18px; font-weight: 700; cursor: pointer; color: #1e293b; position: absolute; left: 20px; }
+        .exp-title { width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 1px; }
 
-        .back-icon {
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            color: #1e293b;
-            position: absolute;
-            left: 24px;
-        }
-
-        .exp-title {
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            color: #1e293b;
-        }
-
-        .exp-amount-box {
-            padding: 10px 24px;
-            display: flex;
-            align-items: baseline;
+        .summary-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
+            padding: 10px 20px;
         }
 
-        .exp-amount {
-            font-size: 32px;
-            font-weight: 800;
-            color: #0f4c5c;
+        .summary-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
         }
 
-        .exp-month {
-            font-size: 12px;
-            font-weight: 700;
-            color: #94a3b8;
-        }
+        .summary-label { font-size: 10px; font-weight: 700; color: #64748b; }
+        .summary-val { font-size: 15px; font-weight: 800; margin-top: 2px; }
 
-        .chart-section {
-            padding: 0 10px;
-            height: 180px;
-        }
-
-        .chart-dates {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-            margin-top: 5px;
-        }
-
-        .date-item {
-            font-size: 10px;
-            font-weight: 600;
-            color: #cbd5e1;
-        }
-
-        .date-item.active {
-            color: #0f4c5c;
-            font-weight: 800;
-        }
+        .chart-section { padding: 10px 10px 0 10px; height: 160px; }
 
         .category-card {
             background: #0f4c5c;
             color: #ffffff;
-            border-top-left-radius: 36px;
-            border-top-right-radius: 36px;
-            padding: 30px 28px;
-            margin-top: 20px;
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+            padding: 24px 24px;
+            margin-top: 10px;
             flex-grow: 1;
         }
 
-        .cat-card-title {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 12px;
-        }
-
-        .cat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .cat-name {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .cat-percentage {
-            font-size: 12px;
-            font-weight: 700;
-        }
+        .cat-card-title { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; }
+        .cat-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .cat-name { font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+        .cat-percentage { font-size: 11px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <!-- Tombol Switching Layar -->
+    <!-- Tab Navigasi Presentasi -->
     <div class="presentation-tabs">
-        <button class="pres-tab-btn active" onclick="showScreen('pin')">1. PIN Lock</button>
-        <button class="pres-tab-btn" onclick="showScreen('account')">2. Account</button>
-        <button class="pres-tab-btn" onclick="showScreen('expenses')">3. Expenses</button>
+        <button class="pres-tab-btn active" onclick="showScreen('pin')">1. PIN</button>
+        <button class="pres-tab-btn" onclick="showScreen('account')">2. Input & Transaksi</button>
+        <button class="pres-tab-btn" onclick="showScreen('expenses')">3. Rangkuman Data</button>
     </div>
 
-    <!-- Container Frame HP -->
+    <!-- Mobile Frame -->
     <div class="single-mobile-container">
         
         <!-- LAYAR 1: KUNCI PIN -->
         <div id="screen-pin" class="screen screen-pin active">
             <div class="pin-content">
                 <div class="pin-header">
-                    <div class="icon-menu">
-                        <span></span>
-                        <span></span>
-                    </div>
                     <div class="brand-title">BANK</div>
-                    <div class="icon-bell">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="bell-dot"></span>
-                    </div>
                 </div>
 
                 <div class="user-profile">
                     <div class="avatar">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Anna">
                     </div>
-                    <div class="greeting">Hi, Anna!</div>
+                    <div class="greeting">Halo, Anna!</div>
                     <div class="pin-dots">
                         <div class="dot filled"></div>
                         <div class="dot filled"></div>
@@ -547,111 +283,83 @@
             </div>
         </div>
 
-        <!-- LAYAR 2: REKENING & TRANSAKSI -->
+        <!-- LAYAR 2: SIMPAN DATA UANG MASUK/KELUAR & DETAIL BALANS -->
         <div id="screen-account" class="screen">
             <div class="account-card">
                 <div class="acc-header">
-                    <div class="icon-menu" style="width: 20px;">
-                        <span style="background:#fff;"></span>
-                        <span style="background:#fff; width: 70%;"></span>
-                    </div>
-                    <div class="acc-title">ACCOUNT</div>
-                    <div class="acc-profile-icon"></div>
+                    <div class="acc-title">REKENING UTAMA</div>
                 </div>
-
-                <div class="balance-label">TOTAL</div>
+                <div class="balance-label">TOTAL SALDO</div>
                 <div class="balance-row">
-                    <div class="balance-amount">$3566</div>
+                    <div class="balance-amount" id="displayBalance">$3,566</div>
                     <div class="balance-arrow" onclick="showScreen('expenses')">❯</div>
                 </div>
-
                 <div class="card-number">•••• •••• •••• 5643</div>
             </div>
 
-            <div class="filter-tabs">
-                <button class="filter-btn active">ALL</button>
-                <button class="filter-btn">EXPENSES</button>
-                <button class="filter-btn">RECEIVES</button>
+            <!-- Form Penambahan Transaksi -->
+            <div class="transaction-form-box">
+                <div class="form-title">+ TAMBAH TRANSAKSI BARU</div>
+                <div class="form-row">
+                    <select id="txType" class="form-select">
+                        <option value="expense">Uang Keluar (-)</option>
+                        <option value="income">Uang Masuk (+)</option>
+                    </select>
+                    <input type="number" id="txAmount" class="form-input" placeholder="Jumlah ($)">
+                </div>
+                <div class="form-row">
+                    <input type="text" id="txTitle" class="form-input" placeholder="Keterangan (misal: Uber)">
+                    <select id="txCategory" class="form-select">
+                        <option value="SHOPS">Belanja</option>
+                        <option value="RESTAURANTS">Restoran</option>
+                        <option value="HEALTH">Kesehatan</option>
+                        <option value="TECHNOLOGY">Teknologi</option>
+                        <option value="WORK">Gaji/Kerja</option>
+                    </select>
+                </div>
+                <button class="btn-submit" onclick="addTransaction()">Simpan Transaksi</button>
             </div>
 
-            <div class="tx-container">
-                <div class="tx-group-title">25 JUNE</div>
-                <div class="tx-item">
-                    <div class="tx-name">UBER</div>
-                    <div class="tx-amount tx-expense">- $56</div>
-                </div>
-                <div class="tx-item">
-                    <div class="tx-name">SHOPPING</div>
-                    <div class="tx-amount tx-expense">- $67</div>
-                </div>
-                <div class="tx-item">
-                    <div class="tx-name">RESTAURANT</div>
-                    <div class="tx-amount tx-expense">- $55</div>
-                </div>
+            <div class="filter-tabs">
+                <button class="filter-btn active" onclick="filterTransactions('ALL')">SEMUA</button>
+                <button class="filter-btn" onclick="filterTransactions('EXPENSE')">KELUAR</button>
+                <button class="filter-btn" onclick="filterTransactions('INCOME')">MASUK</button>
+            </div>
 
-                <div class="tx-group-title" style="margin-top: 20px;">21 JUNE</div>
-                <div class="tx-item">
-                    <div class="tx-name">COFFE</div>
-                    <div class="tx-amount tx-expense">- $2</div>
-                </div>
-                <div class="tx-item">
-                    <div class="tx-name">WORK</div>
-                    <div class="tx-amount tx-income">+ $3425</div>
-                </div>
-                <div class="tx-item">
-                    <div class="tx-name">UBER</div>
-                    <div class="tx-amount tx-expense">- $16</div>
-                </div>
+            <div class="tx-container" id="txList">
+                <!-- Daftar Transaksi akan di-render dinamis melalui JS -->
             </div>
         </div>
 
-        <!-- LAYAR 3: EXPENSES INFORM -->
+        <!-- LAYAR 3: RANGKUMAN SEMUA DATA -->
         <div id="screen-expenses" class="screen">
             <div style="display: flex; flex-direction: column; height: 100%;">
                 <div class="exp-header">
                     <div class="back-icon" onclick="showScreen('account')">❮</div>
-                    <div class="exp-title">EXPENSES INFORM</div>
+                    <div class="exp-title">RANGKUMAN KEUNAGAN</div>
                 </div>
 
-                <div class="exp-amount-box">
-                    <div class="exp-amount">$3566</div>
-                    <div class="exp-month">JUNE</div>
+                <!-- Kartu Ringkasan -->
+                <div class="summary-cards-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">TOTAL MASUK</div>
+                        <div class="summary-val" style="color: #0f4c5c;" id="sumIncome">$0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">TOTAL KELUAR</div>
+                        <div class="summary-val" style="color: #e11d48;" id="sumExpense">$0</div>
+                    </div>
                 </div>
 
                 <div class="chart-section">
-                    <canvas id="expenseChart" height="150"></canvas>
+                    <canvas id="expenseChart" height="140"></canvas>
                 </div>
 
-                <div class="chart-dates">
-                    <span class="date-item">23</span>
-                    <span class="date-item">24</span>
-                    <span class="date-item">25</span>
-                    <span class="date-item">26</span>
-                    <span class="date-item">27</span>
-                    <span class="date-item active">28</span>
-                    <span class="date-item">29</span>
-                    <span class="date-item">30</span>
-                    <span class="date-item">31</span>
-                </div>
-
+                <!-- Persentase Kategori -->
                 <div class="category-card">
-                    <div class="cat-card-title">EXPENSES INFORM</div>
-                    
-                    <div class="cat-item">
-                        <div class="cat-name">SHOPS</div>
-                        <div class="cat-percentage">15%</div>
-                    </div>
-                    <div class="cat-item">
-                        <div class="cat-name">RESTAURANTS</div>
-                        <div class="cat-percentage">57%</div>
-                    </div>
-                    <div class="cat-item">
-                        <div class="cat-name">HEALTH</div>
-                        <div class="cat-percentage">10%</div>
-                    </div>
-                    <div class="cat-item">
-                        <div class="cat-name">TECHNOLOGY</div>
-                        <div class="cat-percentage">12%</div>
+                    <div class="cat-card-title">PERSENTASE PENGELUARAN</div>
+                    <div id="categoryBreakdown">
+                        <!-- Data Persentase Kategori akan dirender di sini -->
                     </div>
                 </div>
             </div>
@@ -659,8 +367,19 @@
 
     </div>
 
-    <!-- JavaScript Logis & Interaksi -->
     <script>
+        // Data Awal Transaksi
+        let transactions = [
+            { id: 1, type: 'expense', title: 'UBER', amount: 56, category: 'SHOPS', date: '25 JUNE' },
+            { id: 2, type: 'expense', title: 'SHOPPING', amount: 67, category: 'SHOPS', date: '25 JUNE' },
+            { id: 3, type: 'expense', title: 'RESTAURANT', amount: 55, category: 'RESTAURANTS', date: '25 JUNE' },
+            { id: 4, type: 'expense', title: 'COFFE', amount: 2, category: 'RESTAURANTS', date: '21 JUNE' },
+            { id: 5, type: 'income', title: 'WORK', amount: 3425, category: 'WORK', date: '21 JUNE' },
+            { id: 6, type: 'expense', title: 'UBER', amount: 16, category: 'SHOPS', date: '21 JUNE' }
+        ];
+
+        let currentFilter = 'ALL';
+
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-' + screenId).classList.add('active');
@@ -670,38 +389,139 @@
             document.querySelectorAll('.pres-tab-btn')[indexMap[screenId]].classList.add('active');
 
             if (screenId === 'expenses') {
-                renderChart();
+                updateSummaryAndChart();
             }
         }
 
         function pressKey(key) {
             if (key !== 'back' && key !== '?') {
-                setTimeout(() => {
-                    showScreen('account');
-                }, 200);
+                setTimeout(() => showScreen('account'), 200);
             }
         }
 
-        let chartInstance = null;
-        function renderChart() {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            
-            if (chartInstance) {
-                chartInstance.destroy();
+        // Render Riwayat Transaksi & Hitung Saldo
+        function renderData() {
+            const txListEl = document.getElementById('txList');
+            txListEl.innerHTML = '';
+
+            let totalBalance = 0;
+            let filteredTx = transactions.filter(t => {
+                if (currentFilter === 'EXPENSE') return t.type === 'expense';
+                if (currentFilter === 'INCOME') return t.type === 'income';
+                return true;
+            });
+
+            // Hitung Total Saldo Keseluruhan
+            transactions.forEach(t => {
+                if (t.type === 'income') totalBalance += t.amount;
+                else totalBalance -= t.amount;
+            });
+
+            document.getElementById('displayBalance').innerText = '$' + totalBalance.toLocaleString();
+
+            // Tampilkan daftar transaksi
+            filteredTx.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'tx-item';
+                const isExpense = t.type === 'expense';
+                item.innerHTML = `
+                    <div>
+                        <div class="tx-name">${t.title}</div>
+                        <div class="tx-cat">${t.category} • ${t.date}</div>
+                    </div>
+                    <div class="tx-amount ${isExpense ? 'tx-expense' : 'tx-income'}">
+                        ${isExpense ? '-' : '+'} $${t.amount}
+                    </div>
+                `;
+                txListEl.appendChild(item);
+            });
+        }
+
+        // Tambah Data Transaksi Baru
+        function addTransaction() {
+            const type = document.getElementById('txType').value;
+            const amount = parseFloat(document.getElementById('txAmount').value);
+            const title = document.getElementById('txTitle').value.trim();
+            const category = document.getElementById('txCategory').value;
+
+            if (!amount || !title) {
+                alert('Silakan isi jumlah dan keterangan transaksi!');
+                return;
             }
+
+            const newTx = {
+                id: Date.now(),
+                type: type,
+                title: title.toUpperCase(),
+                amount: amount,
+                category: category,
+                date: 'HARI INI'
+            };
+
+            transactions.unshift(newTx);
+            
+            // Reset Form Input
+            document.getElementById('txAmount').value = '';
+            document.getElementById('txTitle').value = '';
+
+            renderData();
+        }
+
+        function filterTransactions(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderData();
+        }
+
+        // Rangkuman Data pada Layar 3
+        let chartInstance = null;
+        function updateSummaryAndChart() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+            let catTotals = { SHOPS: 0, RESTAURANTS: 0, HEALTH: 0, TECHNOLOGY: 0 };
+
+            transactions.forEach(t => {
+                if (t.type === 'income') {
+                    totalIncome += t.amount;
+                } else {
+                    totalExpense += t.amount;
+                    if (catTotals[t.category] !== undefined) {
+                        catTotals[t.category] += t.amount;
+                    }
+                }
+            });
+
+            document.getElementById('sumIncome').innerText = '$' + totalIncome.toLocaleString();
+            document.getElementById('sumExpense').innerText = '$' + totalExpense.toLocaleString();
+
+            // Render Persentase Per Kategori
+            const catContainer = document.getElementById('categoryBreakdown');
+            catContainer.innerHTML = '';
+
+            for (let cat in catTotals) {
+                let percentage = totalExpense > 0 ? Math.round((catTotals[cat] / totalExpense) * 100) : 0;
+                catContainer.innerHTML += `
+                    <div class="cat-item">
+                        <div class="cat-name">${cat}</div>
+                        <div class="cat-percentage">${percentage}%</div>
+                    </div>
+                `;
+            }
+
+            // Render Grafik
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
 
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['23', '24', '25', '26', '27', '28', '29', '30', '31'],
+                    labels: ['21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', 'Hari Ini'],
                     datasets: [{
-                        data: [35, 65, 50, 20, 35, 75, 85, 45, 60],
-                        borderColor: '#1e293b',
+                        data: [18, 25, 40, 30, 178, totalExpense],
+                        borderColor: '#0f4c5c',
                         borderWidth: 2,
-                        tension: 0.45,
-                        pointRadius: [0, 0, 0, 0, 0, 5, 0, 0, 0],
-                        pointBackgroundColor: '#0f4c5c',
-                        pointBorderColor: '#0f4c5c',
+                        tension: 0.4,
                         fill: false
                     }]
                 },
@@ -709,13 +529,13 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        x: { display: false },
-                        y: { display: false }
-                    }
+                    scales: { x: { display: true }, y: { display: false } }
                 }
             });
         }
+
+        // Inisialisasi awal
+        renderData();
     </script>
 </body>
 </html>
