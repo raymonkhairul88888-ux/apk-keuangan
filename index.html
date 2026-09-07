@@ -1,4 +1,684 @@
-                }, 300);
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Keuangan Digital - UI Mobile</title>
+    <!-- Chart.js untuk Grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #d1d5db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        /* Navigasi Presentasi Layar */
+        .presentation-tabs {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f4c5c;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .pres-tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pres-tab-btn.active, .pres-tab-btn:hover {
+            background: #ffffff;
+            color: #0f4c5c;
+        }
+
+        /* Bingkai HP */
+        .single-mobile-container {
+            width: 360px;
+            height: 720px;
+            background: #ffffff;
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            position: relative;
+            border: 10px solid #ffffff;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #ffffff;
+            overflow-y: auto;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* --- LAYAR 1: KUNCI PIN --- */
+        .screen-pin {
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
+            color: #ffffff;
+            position: relative;
+            padding: 40px 24px 20px 24px;
+        }
+
+        .screen-pin::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+
+        .pin-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pin-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .icon-menu {
+            width: 24px;
+            height: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .icon-menu span {
+            display: block;
+            height: 2.5px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 2px;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .icon-bell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .bell-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            border: 1.5px solid #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #111827;
+            margin-bottom: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .greeting {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+        }
+
+        .pin-dots {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .dot.filled {
+            background: #ffffff;
+            box-shadow: 0 0 8px #ffffff;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 270px;
+            margin-bottom: 15px;
+        }
+
+        .key-btn {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.15s;
+        }
+
+        .key-btn:active {
+            background: rgba(255, 255, 255, 0.45);
+            transform: scale(0.95);
+        }
+
+        /* --- LAYAR 2: REKENING & TRANSAKSI --- */
+        .account-card {
+            background: #0f4c5c;
+            color: #ffffff;
+            padding: 30px 24px 35px 24px;
+            border-bottom-left-radius: 36px;
+            border-bottom-right-radius: 36px;
+            box-shadow: 0 10px 25px rgba(15, 76, 92, 0.25);
+        }
+
+        .acc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .acc-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .acc-profile-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .acc-profile-icon::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #0f4c5c;
+        }
+
+        .balance-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+
+        .balance-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .balance-arrow {
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .card-number {
+            font-size: 13px;
+            letter-spacing: 3px;
+            opacity: 0.85;
+            font-family: monospace;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 24px;
+            padding: 20px 24px 10px 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 6px;
+        }
+
+        .filter-btn.active {
+            color: #0f4c5c;
+        }
+
+        .filter-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #0f4c5c;
+            border-radius: 2px;
+        }
+
+        .tx-container {
+            padding: 16px 24px;
+        }
+
+        .tx-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tx-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .tx-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .tx-amount {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .tx-expense { color: #1e293b; }
+        .tx-income { color: #0f4c5c; }
+
+        /* --- LAYAR 3: LAPORAN PENGELUARAN --- */
+        .exp-header {
+            display: flex;
+            align-items: center;
+            padding: 24px 24px 10px 24px;
+            position: relative;
+        }
+
+        .back-icon {
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #1e293b;
+            position: absolute;
+            left: 24px;
+        }
+
+        .exp-title {
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #1e293b;
+        }
+
+        .exp-amount-box {
+            padding: 10px 24px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .exp-amount {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f4c5c;
+        }
+
+        .exp-month {
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .chart-section {
+            padding: 0 10px;
+            height: 180px;
+        }
+
+        .chart-dates {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin-top: 5px;
+        }
+
+        .date-item {
+            font-size: 10px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .date-item.active {
+            color: #0f4c5c;
+            font-weight: 800;
+        }
+
+        .category-card {
+            background: #0f4c5c;
+            color: #ffffff;
+            border-top-left-radius: 36px;
+            border-top-right-radius: 36px;
+            padding: 30px 28px;
+            margin-top: 20px;
+            flex-grow: 1;
+        }
+
+        .cat-card-title {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 12px;
+        }
+
+        .cat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .cat-name {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .cat-percentage {
+            font-size: 12px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tombol Switching Layar -->
+    <div class="presentation-tabs">
+        <button class="pres-tab-btn active" onclick="showScreen('pin')">1. PIN Lock</button>
+        <button class="pres-tab-btn" onclick="showScreen('account')">2. Account</button>
+        <button class="pres-tab-btn" onclick="showScreen('expenses')">3. Expenses</button>
+    </div>
+
+    <!-- Container Frame HP -->
+    <div class="single-mobile-container">
+        
+        <!-- LAYAR 1: KUNCI PIN -->
+        <div id="screen-pin" class="screen screen-pin active">
+            <div class="pin-content">
+                <div class="pin-header">
+                    <div class="icon-menu">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="brand-title">BANK</div>
+                    <div class="icon-bell">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="bell-dot"></span>
+                    </div>
+                </div>
+
+                <div class="user-profile">
+                    <div class="avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Anna">
+                    </div>
+                    <div class="greeting">Hi, Anna!</div>
+                    <div class="pin-dots">
+                        <div class="dot filled"></div>
+                        <div class="dot filled"></div>
+                        <div class="dot filled"></div>
+                        <div class="dot filled"></div>
+                        <div class="dot filled"></div>
+                    </div>
+                </div>
+
+                <div class="keypad">
+                    <button class="key-btn" onclick="pressKey(1)">1</button>
+                    <button class="key-btn" onclick="pressKey(2)">2</button>
+                    <button class="key-btn" onclick="pressKey(3)">3</button>
+                    <button class="key-btn" onclick="pressKey(4)">4</button>
+                    <button class="key-btn" onclick="pressKey(5)">5</button>
+                    <button class="key-btn" onclick="pressKey(6)">6</button>
+                    <button class="key-btn" onclick="pressKey(7)">7</button>
+                    <button class="key-btn" onclick="pressKey(8)">8</button>
+                    <button class="key-btn" onclick="pressKey(9)">9</button>
+                    <button class="key-btn" onclick="pressKey('?')">?</button>
+                    <button class="key-btn" onclick="pressKey(0)">0</button>
+                    <button class="key-btn" onclick="pressKey('back')">⌫</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYAR 2: REKENING & TRANSAKSI -->
+        <div id="screen-account" class="screen">
+            <div class="account-card">
+                <div class="acc-header">
+                    <div class="icon-menu" style="width: 20px;">
+                        <span style="background:#fff;"></span>
+                        <span style="background:#fff; width: 70%;"></span>
+                    </div>
+                    <div class="acc-title">ACCOUNT</div>
+                    <div class="acc-profile-icon"></div>
+                </div>
+
+                <div class="balance-label">TOTAL</div>
+                <div class="balance-row">
+                    <div class="balance-amount">$3566</div>
+                    <div class="balance-arrow" onclick="showScreen('expenses')">❯</div>
+                </div>
+
+                <div class="card-number">•••• •••• •••• 5643</div>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-btn active">ALL</button>
+                <button class="filter-btn">EXPENSES</button>
+                <button class="filter-btn">RECEIVES</button>
+            </div>
+
+            <div class="tx-container">
+                <div class="tx-group-title">25 JUNE</div>
+                <div class="tx-item">
+                    <div class="tx-name">UBER</div>
+                    <div class="tx-amount tx-expense">- $56</div>
+                </div>
+                <div class="tx-item">
+                    <div class="tx-name">SHOPPING</div>
+                    <div class="tx-amount tx-expense">- $67</div>
+                </div>
+                <div class="tx-item">
+                    <div class="tx-name">RESTAURANT</div>
+                    <div class="tx-amount tx-expense">- $55</div>
+                </div>
+
+                <div class="tx-group-title" style="margin-top: 20px;">21 JUNE</div>
+                <div class="tx-item">
+                    <div class="tx-name">COFFE</div>
+                    <div class="tx-amount tx-expense">- $2</div>
+                </div>
+                <div class="tx-item">
+                    <div class="tx-name">WORK</div>
+                    <div class="tx-amount tx-income">+ $3425</div>
+                </div>
+                <div class="tx-item">
+                    <div class="tx-name">UBER</div>
+                    <div class="tx-amount tx-expense">- $16</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYAR 3: EXPENSES INFORM -->
+        <div id="screen-expenses" class="screen">
+            <div style="display: flex; flex-direction: column; height: 100%;">
+                <div class="exp-header">
+                    <div class="back-icon" onclick="showScreen('account')">❮</div>
+                    <div class="exp-title">EXPENSES INFORM</div>
+                </div>
+
+                <div class="exp-amount-box">
+                    <div class="exp-amount">$3566</div>
+                    <div class="exp-month">JUNE</div>
+                </div>
+
+                <div class="chart-section">
+                    <canvas id="expenseChart" height="150"></canvas>
+                </div>
+
+                <div class="chart-dates">
+                    <span class="date-item">23</span>
+                    <span class="date-item">24</span>
+                    <span class="date-item">25</span>
+                    <span class="date-item">26</span>
+                    <span class="date-item">27</span>
+                    <span class="date-item active">28</span>
+                    <span class="date-item">29</span>
+                    <span class="date-item">30</span>
+                    <span class="date-item">31</span>
+                </div>
+
+                <div class="category-card">
+                    <div class="cat-card-title">EXPENSES INFORM</div>
+                    
+                    <div class="cat-item">
+                        <div class="cat-name">SHOPS</div>
+                        <div class="cat-percentage">15%</div>
+                    </div>
+                    <div class="cat-item">
+                        <div class="cat-name">RESTAURANTS</div>
+                        <div class="cat-percentage">57%</div>
+                    </div>
+                    <div class="cat-item">
+                        <div class="cat-name">HEALTH</div>
+                        <div class="cat-percentage">10%</div>
+                    </div>
+                    <div class="cat-item">
+                        <div class="cat-name">TECHNOLOGY</div>
+                        <div class="cat-percentage">12%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logis & Interaksi -->
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenId).classList.add('active');
+
+            document.querySelectorAll('.pres-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const indexMap = { 'pin': 0, 'account': 1, 'expenses': 2 };
+            document.querySelectorAll('.pres-tab-btn')[indexMap[screenId]].classList.add('active');
+
+            if (screenId === 'expenses') {
+                renderChart();
+            }
+        }
+
+        function pressKey(key) {
+            if (key !== 'back' && key !== '?') {
+                setTimeout(() => {
+                    showScreen('account');
+                }, 200);
             }
         }
 
@@ -15,24 +695,20 @@
                 data: {
                     labels: ['23', '24', '25', '26', '27', '28', '29', '30', '31'],
                     datasets: [{
-                        data: [40, 65, 50, 20, 35, 75, 85, 45, 60],
+                        data: [35, 65, 50, 20, 35, 75, 85, 45, 60],
                         borderColor: '#1e293b',
                         borderWidth: 2,
                         tension: 0.45,
                         pointRadius: [0, 0, 0, 0, 0, 5, 0, 0, 0],
                         pointBackgroundColor: '#0f4c5c',
                         pointBorderColor: '#0f4c5c',
-                        pointHoverRadius: 6,
                         fill: false
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         x: { display: false },
                         y: { display: false }
