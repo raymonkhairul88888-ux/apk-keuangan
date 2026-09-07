@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catatan Keuangan</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #e0e0e0; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 480px; background: #f0f0f0; min-height: 100vh; position: relative; pb: 70px; }
+        .app-container { width: 100%; max-width: 480px; background: #f0f0f0; min-height: 100vh; position: relative; padding-bottom: 80px; }
         
         /* Header & Navigation Bar */
-        .app-header { background-color: #546e7a; color: white; text-align: center; padding: 12px; font-weight: bold; font-size: 16px; }
+        .app-header { background-color: #546e7a; color: white; text-align: center; padding: 14px; font-weight: bold; font-size: 16px; }
         .nav-tabs { display: flex; background-color: #607d8b; }
-        .tab-btn { flex: 1; padding: 10px; text-align: center; color: #cfd8dc; font-weight: bold; font-size: 13px; border: none; background: none; cursor: pointer; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; color: #cfd8dc; font-weight: bold; font-size: 13px; border: none; background: none; cursor: pointer; }
         .tab-btn.active { color: white; border-bottom: 3px solid #ffffff; background-color: #546e7a; }
 
         /* Content Sections */
-        .tab-content { display: none; padding: 10px; }
+        .tab-content { display: none; padding: 12px; }
         .tab-content.active { display: block; }
 
         /* Cards & Styling */
-        .card { background: white; border-radius: 4px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
-        .card-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 6px; margin-bottom: 8px; font-size: 13px; color: #555; }
-        .tx-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; border-bottom: 1px dashed #f0f0f0; }
+        .card { background: white; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+        .card-header { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 8px; font-size: 13px; color: #444; }
+        .tx-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px dashed #f0f0f0; }
         .tx-item:last-child { border-bottom: none; }
         
         /* Colors */
@@ -31,15 +31,15 @@
         .text-net { color: #2e7d32; font-weight: bold; font-size: 16px; }
 
         /* Action Buttons */
-        .btn-add { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #ccc; padding: 10px 24px; border-radius: 6px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; z-index: 10; }
+        .btn-add { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid #ccc; padding: 10px 28px; border-radius: 20px; font-weight: bold; box-shadow: 0 3px 8px rgba(0,0,0,0.2); cursor: pointer; z-index: 10; font-size: 14px; }
         
         /* Modal Form Input */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 400px; padding: 20px; border-radius: 8px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #666; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn-submit { width: 100%; padding: 10px; background: #546e7a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #666; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn-submit { width: 100%; padding: 10px; background: #546e7a; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -48,9 +48,9 @@
     <div class="app-header">Catatan Keuangan</div>
     
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('utama')">UTAMA</button>
-        <button class="tab-btn" onclick="switchTab('laporan')">LAPORAN</button>
-        <button class="tab-btn" onclick="switchTab('setelan')">SETELAN</button>
+        <button class="tab-btn active" onclick="switchTab('utama', this)">UTAMA</button>
+        <button class="tab-btn" onclick="switchTab('laporan', this)">LAPORAN</button>
+        <button class="tab-btn" onclick="switchTab('setelan', this)">SETELAN</button>
     </div>
 
     <!-- TAB UTAMA -->
@@ -65,7 +65,7 @@
             <div class="card-header"><b>Ringkasan Total</b></div>
             <div class="tx-item"><span>Pengeluaran</span><span id="rep-out" class="text-out">Rp 0</span></div>
             <div class="tx-item"><span>Pemasukan</span><span id="rep-in" class="text-in">Rp 0</span></div>
-            <div class="tx-item" style="margin-top:6px; pt-6px; border-top:1px solid #eee;">
+            <div class="tx-item" style="margin-top:6px; padding-top:6px; border-top:1px solid #eee;">
                 <span><b>Selisih</b></span><span id="rep-net" class="text-net">Rp 0</span>
             </div>
         </div>
@@ -85,7 +85,7 @@
     <div id="tab-setelan" class="tab-content">
         <div class="card">
             <div class="card-header"><b>Pengaturan Data</b></div>
-            <button onclick="resetData()" style="width:100%; padding:10px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer;">Hapus Semua Data</button>
+            <button onclick="resetData()" style="width:100%; padding:10px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Hapus Semua Data</button>
         </div>
     </div>
 </div>
@@ -97,7 +97,7 @@
         <form id="txForm">
             <div class="form-group">
                 <label>Keterangan / Kategori</label>
-                <input type="text" id="keterangan" placeholder="Contoh: Makan, Transport" required>
+                <input type="text" id="keterangan" placeholder="Contoh: Gaji, Makan, Transport" required>
             </div>
             <div class="form-group">
                 <label>Nominal (Rp)</label>
@@ -106,12 +106,12 @@
             <div class="form-group">
                 <label>Jenis Transaksi</label>
                 <select id="jenis">
-                    <option value="pengeluaran">Pengeluaran</option>
                     <option value="pemasukan">Pemasukan</option>
+                    <option value="pengeluaran">Pengeluaran</option>
                 </select>
             </div>
             <div style="display:flex; gap:10px;">
-                <button type="button" onclick="closeModal()" style="flex:1; padding:8px; border:1px solid #ccc; background:white;">Batal</button>
+                <button type="button" onclick="closeModal()" style="flex:1; padding:10px; border:1px solid #ccc; background:white; border-radius:4px; font-weight:bold;">Batal</button>
                 <button type="submit" class="btn-submit" style="flex:1;">Simpan</button>
             </div>
         </form>
@@ -122,14 +122,14 @@
     let db = JSON.parse(localStorage.getItem('catatan_keuangan')) || [];
 
     function formatRupiah(angka) {
-        return 'Rp ' + parseInt(angka).toLocaleString('id-ID');
+        return 'Rp ' + Number(angka).toLocaleString('id-ID');
     }
 
-    function switchTab(tabName) {
+    function switchTab(tabName, el) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
-        event.currentTarget.classList.add('active');
+        el.classList.add('active');
         document.getElementById('tab-' + tabName).classList.add('active');
 
         if(tabName === 'laporan') renderLaporan();
@@ -140,10 +140,18 @@
 
     document.getElementById('txForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const keterangan = document.getElementById('keterangan').value;
-        const jumlah = parseInt(document.getElementById('jumlah').value);
+        const keterangan = document.getElementById('keterangan').value.trim();
+        const jumlah = parseInt(document.getElementById('jumlah').value, 10);
         const jenis = document.getElementById('jenis').value;
-        const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'Short', year: 'numeric' });
+        
+        const now = new Date();
+        const opsiTanggal = { year: 'numeric', month: 'short', day: 'numeric' };
+        const tanggal = now.toLocaleDateString('id-ID', opsiTanggal);
+
+        if(!keterangan || isNaN(jumlah) || jumlah <= 0) {
+            alert('Mohon isi keterangan dan nominal angka dengan benar.');
+            return;
+        }
 
         db.push({ id: Date.now(), keterangan, jumlah, jenis, tanggal });
         localStorage.setItem('catatan_keuangan', JSON.stringify(db));
@@ -158,11 +166,10 @@
         container.innerHTML = '';
 
         if(db.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#888; margin-top:30px;">Belum ada transaksi.</div>';
+            container.innerHTML = '<div style="text-align:center; color:#888; margin-top:40px;">Belum ada transaksi.</div>';
             return;
         }
 
-        // Grouping berdasarkan Tanggal
         const groups = db.reduce((acc, tx) => {
             acc[tx.tanggal] = acc[tx.tanggal] || [];
             acc[tx.tanggal].push(tx);
@@ -180,7 +187,7 @@
                 itemsHtml += `
                     <div class="tx-item">
                         <span>${tx.keterangan}</span>
-                        <span class="${tx.jenis === 'pemasukan' ? 'text-in' : ''}">${formatRupiah(tx.jumlah)}</span>
+                        <span class="${tx.jenis === 'pemasukan' ? 'text-in' : 'text-out'}">${tx.jenis === 'pemasukan' ? '+' : '-'} ${formatRupiah(tx.jumlah)}</span>
                     </div>
                 `;
             });
@@ -217,7 +224,15 @@
 
         document.getElementById('rep-in').innerText = formatRupiah(totalIn);
         document.getElementById('rep-out').innerText = formatRupiah(totalOut);
-        document.getElementById('rep-net').innerText = formatRupiah(totalIn - totalOut);
+        
+        const selisih = totalIn - totalOut;
+        const repNet = document.getElementById('rep-net');
+        repNet.innerText = formatRupiah(selisih);
+        if(selisih < 0) {
+            repNet.className = 'text-out';
+        } else {
+            repNet.className = 'text-in';
+        }
 
         renderTopList('top-out-list', katOut);
         renderTopList('top-in-list', katIn);
@@ -229,7 +244,7 @@
         const sorted = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
 
         if(sorted.length === 0) {
-            el.innerHTML = '<div style="font-size:12px; color:#888;">Tidak ada data</div>';
+            el.innerHTML = '<div style="font-size:12px; color:#888; padding: 4px 0;">Tidak ada data</div>';
             return;
         }
 
