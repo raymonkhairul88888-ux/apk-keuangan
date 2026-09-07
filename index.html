@@ -41,69 +41,101 @@
 <body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
 
   <!-- Container Bingkai HP (Mockup Screen) -->
-  <div class="w-full max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden p-4 space-y-4 border border-slate-200">
+  <div class="w-full max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden p-4 space-y-4 border border-slate-200 min-h-[620px] flex flex-col justify-between">
     
-    <!-- Container Wajib untuk React di CodeSandbox (Jika diperlukan) -->
+    <!-- Kontainer Wajib untuk React di CodeSandbox -->
     <div id="root"></div>
 
-    <!-- Header & Kartu Rekening Utama -->
-    <div class="app-card p-5 rounded-[24px] shadow-md space-y-3 relative">
-      <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
-        <span>CATATAN ASISTEN</span>
-      </div>
+    <!-- ==================== TAMPILAN 1: DASHBOARD / UTAMA ==================== -->
+    <div id="tampilanUtama" class="space-y-4 flex-1">
       
-      <div>
-        <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">NOMINAL PEMBUKUAN</p>
-        <div class="flex justify-between items-center">
-          <h2 id="saldoTotal" class="text-3xl font-extrabold tracking-tight">Rp 0</h2>
-          <span class="text-xl opacity-80 cursor-pointer">&rsaquo;</span>
+      <!-- Card Ringkasan Pembukuan -->
+      <div class="app-card p-5 rounded-[24px] shadow-md space-y-3 relative">
+        <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
+          <span>CATATAN ASISTEN</span>
+        </div>
+        
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">NOMINAL PEMBUKUAN</p>
+          <div class="flex justify-between items-center">
+            <h2 id="saldoTotal" class="text-2xl font-extrabold tracking-tight">Rp 0</h2>
+            <span class="text-xl opacity-80 cursor-pointer">&rsaquo;</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Form Input Transaksi -->
-    <div class="space-y-2.5 px-1">
-      <p class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase flex items-center gap-1">
-        <span>+</span> TAMBAH TRANSAKSI BARU
-      </p>
-      
-      <div class="grid grid-cols-2 gap-2">
-        <select id="jenis" class="input-custom p-2.5 rounded-xl text-xs font-semibold">
-          <option value="Keluar">Uang Keluar (-)</option>
-          <option value="Masuk">Uang Masuk (+)</option>
-        </select>
-        <input type="number" id="nominal" placeholder="Jumlah (Rp)" class="input-custom p-2.5 rounded-xl text-xs font-medium" />
-      </div>
-
-      <div class="grid grid-cols-2 gap-2">
-        <input type="text" id="keterangan" placeholder="Keterangan (misal: Uber)" class="input-custom p-2.5 rounded-xl text-xs font-medium" />
-        <select id="kategori" class="input-custom p-2.5 rounded-xl text-xs font-semibold">
-          <option value="Belanja">Belanja</option>
-          <option value="Restoran">Restoran</option>
-          <option value="Transport">Transport</option>
-          <option value="Gaji">Gaji / Hasil</option>
-        </select>
-      </div>
-
-      <button onclick="tambahTransaksi()" class="btn-primary w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
-        Simpan Transaksi
+      <!-- Tombol Menuju Tampilan 2 (Tambah Transaksi) -->
+      <button onclick="bukaHalaman('tampilanForm')" class="btn-primary w-full p-3 rounded-2xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-2">
+        <span class="text-base font-bold">+</span> TAMBAH TRANSAKSI BARU
       </button>
-    </div>
 
-    <hr class="border-slate-100 my-2" />
+      <hr class="border-slate-100 my-2" />
 
-    <!-- Filter Tab & List Transaksi -->
-    <div class="space-y-3 px-1">
-      <div class="flex space-x-5 text-xs border-b border-slate-100 pb-2">
-        <button onclick="setFilter('SEMUA')" id="tab-SEMUA" class="tab-active pb-1 text-[11px]">SEMUA</button>
-        <button onclick="setFilter('Keluar')" id="tab-Keluar" class="text-slate-400 font-semibold pb-1 text-[11px]">KELUAR</button>
-        <button onclick="setFilter('Masuk')" id="tab-Masuk" class="text-slate-400 font-semibold pb-1 text-[11px]">MASUK</button>
+      <!-- Filter Tab & List Transaksi -->
+      <div class="space-y-3 px-1">
+        <div class="flex space-x-5 text-xs border-b border-slate-100 pb-2">
+          <button onclick="setFilter('SEMUA')" id="tab-SEMUA" class="tab-active pb-1 text-[11px]">SEMUA</button>
+          <button onclick="setFilter('Keluar')" id="tab-Keluar" class="text-slate-400 font-semibold pb-1 text-[11px]">KELUAR</button>
+          <button onclick="setFilter('Masuk')" id="tab-Masuk" class="text-slate-400 font-semibold pb-1 text-[11px]">MASUK</button>
+        </div>
+
+        <!-- Riwayat Transaksi List -->
+        <ul id="daftarTransaksi" class="space-y-3 text-xs max-h-[300px] overflow-y-auto pr-1">
+          <li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>
+        </ul>
       </div>
 
-      <!-- Riwayat Transaksi List -->
-      <ul id="daftarTransaksi" class="space-y-3 text-xs max-h-[220px] overflow-y-auto pr-1">
-        <li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>
-      </ul>
+    </div>
+
+    <!-- ==================== TAMPILAN 2: FORM INPUT TRANSAKSI ==================== -->
+    <div id="tampilanForm" class="space-y-4 flex-1 hidden">
+      
+      <!-- Header Halaman Form -->
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <button onclick="bukaHalaman('tampilanUtama')" class="text-slate-600 font-bold text-xs flex items-center gap-1 hover:text-slate-900">
+          &larr; Kembali
+        </button>
+        <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Input Transaksi</span>
+        <div class="w-8"></div>
+      </div>
+
+      <!-- Form Input Data -->
+      <div class="space-y-3 pt-2">
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jenis Transaksi</label>
+          <select id="jenis" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
+            <option value="Keluar">Uang Keluar (-)</option>
+            <option value="Masuk">Uang Masuk (+)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
+          <input type="number" id="nominal" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
+          <input type="text" id="keterangan" placeholder="Keterangan (misal: Jajan)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
+          <select id="kategori" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
+            <option value="Gaji">Gaji</option>
+            <option value="Belanja">Belanja</option>
+            <option value="Restoran">Restoran</option>
+            <option value="Transport">Transport</option>
+          </select>
+        </div>
+
+        <div class="pt-4">
+          <button onclick="tambahTransaksi()" class="btn-primary w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
+            Simpan Transaksi
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </div>
@@ -114,7 +146,17 @@
     let filterAktif = 'SEMUA';
 
     function formatRupiah(angka) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+      const isMinus = angka < 0;
+      const absoluteVal = Math.abs(angka);
+      const formatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(absoluteVal);
+      return isMinus ? '-' + formatted : formatted;
+    }
+
+    function bukaHalaman(halamanId) {
+      document.getElementById('tampilanUtama').classList.add('hidden');
+      document.getElementById('tampilanForm').classList.add('hidden');
+      
+      document.getElementById(halamanId).classList.remove('hidden');
     }
 
     function setFilter(filter) {
@@ -154,7 +196,7 @@
       } else {
         dataFiltered.forEach((item, index) => {
           const li = document.createElement('li');
-          li.className = 'flex justify-between items-center py-1 border-b border-dashed border-slate-100 last:border-none';
+          li.className = 'flex justify-between items-center py-1.5 border-b border-dashed border-slate-100 last:border-none';
           
           const isKeluar = item.jenis === 'Keluar';
           const tAnda = isKeluar ? '- ' : '+ ';
@@ -195,7 +237,9 @@
 
       document.getElementById('keterangan').value = '';
       document.getElementById('nominal').value = '';
+      
       updateUI();
+      bukaHalaman('tampilanUtama');
     }
 
     function hapusSatu(index) {
