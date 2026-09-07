@@ -1,541 +1,147 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Keuangan Digital - Interaktif</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #d1d5db;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px 10px;
-        }
-
-        .presentation-tabs {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0f4c5c;
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: flex;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-        }
-
-        .pres-tab-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .pres-tab-btn.active, .pres-tab-btn:hover {
-            background: #ffffff;
-            color: #0f4c5c;
-        }
-
-        .single-mobile-container {
-            width: 360px;
-            height: 720px;
-            background: #ffffff;
-            border-radius: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            position: relative;
-            border: 10px solid #ffffff;
-        }
-
-        .screen {
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: #ffffff;
-            overflow-y: auto;
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        /* --- LAYAR 1: KUNCI PIN --- */
-        .screen-pin {
-            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80') center/cover no-repeat;
-            color: #ffffff;
-            position: relative;
-            padding: 40px 24px 20px 24px;
-        }
-
-        .screen-pin::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 1;
-        }
-
-        .pin-content {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pin-header {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .brand-title { font-size: 18px; font-weight: 800; letter-spacing: 2px; }
-        .user-profile { display: flex; flex-direction: column; align-items: center; margin-top: 10px; }
-        .avatar { width: 72px; height: 72px; border-radius: 50%; background: #111827; margin-bottom: 12px; border: 2px solid rgba(255, 255, 255, 0.6); overflow: hidden; }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .greeting { font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.9); margin-bottom: 20px; }
-        .pin-dots { display: flex; gap: 12px; margin-bottom: 15px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); }
-        .dot.filled { background: #ffffff; box-shadow: 0 0 8px #ffffff; }
-        
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; max-width: 270px; margin-bottom: 15px; }
-        .key-btn { aspect-ratio: 1; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.25); color: #ffffff; font-size: 20px; font-weight: 600; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.15s; }
-        .key-btn:active { background: rgba(255, 255, 255, 0.45); transform: scale(0.95); }
-
-        /* --- LAYAR 2: DETAIL TRANSAKSI & INPUT DATA --- */
-        .account-card {
-            background: #0f4c5c;
-            color: #ffffff;
-            padding: 24px 20px 28px 20px;
-            border-bottom-left-radius: 32px;
-            border-bottom-right-radius: 32px;
-            box-shadow: 0 10px 25px rgba(15, 76, 92, 0.25);
-        }
-
-        .acc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .acc-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; }
-        .balance-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; opacity: 0.8; margin-bottom: 4px; }
-        .balance-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .balance-amount { font-size: 28px; font-weight: 700; }
-        .balance-arrow { font-size: 20px; cursor: pointer; opacity: 0.8; }
-        .card-number { font-size: 12px; letter-spacing: 3px; opacity: 0.85; font-family: monospace; }
-
-        /* Form Input Transaksi */
-        .transaction-form-box {
-            padding: 12px 20px;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .form-title { font-size: 11px; font-weight: 800; color: #0f4c5c; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        
-        .form-input, .form-select {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 12px;
-            outline: none;
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: #0f4c5c;
-            color: #ffffff;
-            border: none;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .filter-tabs { display: flex; gap: 16px; padding: 12px 20px 6px 20px; }
-        .filter-btn { background: none; border: none; font-size: 11px; font-weight: 800; color: #94a3b8; cursor: pointer; position: relative; padding-bottom: 4px; }
-        .filter-btn.active { color: #0f4c5c; }
-        .filter-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: #0f4c5c; }
-
-        .tx-container { padding: 10px 20px 20px 20px; }
-        .tx-group-title { font-size: 10px; font-weight: 700; color: #94a3b8; margin-top: 8px; margin-bottom: 8px; }
-        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #f1f5f9; }
-        .tx-name { font-size: 12px; font-weight: 800; color: #1e293b; }
-        .tx-cat { font-size: 10px; color: #64748b; }
-        .tx-amount { font-size: 12px; font-weight: 700; }
-        .tx-expense { color: #e11d48; }
-        .tx-income { color: #0f4c5c; }
-
-        /* --- LAYAR 3: RANGKUMAN DATA (RANGKUMAN SEMUA DATA) --- */
-        .exp-header { display: flex; align-items: center; padding: 20px 20px 10px 20px; position: relative; }
-        .back-icon { font-size: 18px; font-weight: 700; cursor: pointer; color: #1e293b; position: absolute; left: 20px; }
-        .exp-title { width: 100%; text-align: center; font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 1px; }
-
-        .summary-cards-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 10px 20px;
-        }
-
-        .summary-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 10px;
-        }
-
-        .summary-label { font-size: 10px; font-weight: 700; color: #64748b; }
-        .summary-val { font-size: 15px; font-weight: 800; margin-top: 2px; }
-
-        .chart-section { padding: 10px 10px 0 10px; height: 160px; }
-
-        .category-card {
-            background: #0f4c5c;
-            color: #ffffff;
-            border-top-left-radius: 32px;
-            border-top-right-radius: 32px;
-            padding: 24px 24px;
-            margin-top: 10px;
-            flex-grow: 1;
-        }
-
-        .cat-card-title { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; }
-        .cat-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .cat-name { font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
-        .cat-percentage { font-size: 11px; font-weight: 700; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Keuangan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: system-ui, sans-serif; }
+    .card { background-color: #1e293b; border: 1px solid #334155; }
+    .input-field { background-color: #0f172a; border: 1px solid #334155; color: #fff; }
+  </style>
 </head>
-<body>
+<body class="p-4 max-w-md mx-auto space-y-4">
 
-    <!-- Tab Navigasi Presentasi -->
-    <div class="presentation-tabs">
-        <button class="pres-tab-btn active" onclick="showScreen('pin')">1. PIN</button>
-        <button class="pres-tab-btn" onclick="showScreen('account')">2. Input & Transaksi</button>
-        <button class="pres-tab-btn" onclick="showScreen('expenses')">3. Rangkuman Data</button>
+  <!-- Kontainer Wajib untuk React di CodeSandbox -->
+  <div id="root"></div>
+
+  <!-- Header & Saldo -->
+  <div class="card p-5 rounded-2xl shadow-lg space-y-2">
+    <h1 class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Saldo Saat Ini</h1>
+    <h2 id="saldoTotal" class="text-3xl font-extrabold text-indigo-400">Rp 0</h2>
+    
+    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-700/50">
+      <div>
+        <p class="text-[10px] text-slate-400">Pemasukan</p>
+        <p id="totalMasuk" class="text-sm font-bold text-emerald-400">Rp 0</p>
+      </div>
+      <div>
+        <p class="text-[10px] text-slate-400">Pengeluaran</p>
+        <p id="totalKeluar" class="text-sm font-bold text-rose-400">Rp 0</p>
+      </div>
     </div>
+  </div>
 
-    <!-- Mobile Frame -->
-    <div class="single-mobile-container">
-        
-        <!-- LAYAR 1: KUNCI PIN -->
-        <div id="screen-pin" class="screen screen-pin active">
-            <div class="pin-content">
-                <div class="pin-header">
-                    <div class="brand-title">BANK</div>
-                </div>
-
-                <div class="user-profile">
-                    <div class="avatar">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Anna">
-                    </div>
-                    <div class="greeting">Halo, Anna!</div>
-                    <div class="pin-dots">
-                        <div class="dot filled"></div>
-                        <div class="dot filled"></div>
-                        <div class="dot filled"></div>
-                        <div class="dot filled"></div>
-                        <div class="dot filled"></div>
-                    </div>
-                </div>
-
-                <div class="keypad">
-                    <button class="key-btn" onclick="pressKey(1)">1</button>
-                    <button class="key-btn" onclick="pressKey(2)">2</button>
-                    <button class="key-btn" onclick="pressKey(3)">3</button>
-                    <button class="key-btn" onclick="pressKey(4)">4</button>
-                    <button class="key-btn" onclick="pressKey(5)">5</button>
-                    <button class="key-btn" onclick="pressKey(6)">6</button>
-                    <button class="key-btn" onclick="pressKey(7)">7</button>
-                    <button class="key-btn" onclick="pressKey(8)">8</button>
-                    <button class="key-btn" onclick="pressKey(9)">9</button>
-                    <button class="key-btn" onclick="pressKey('?')">?</button>
-                    <button class="key-btn" onclick="pressKey(0)">0</button>
-                    <button class="key-btn" onclick="pressKey('back')">⌫</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- LAYAR 2: SIMPAN DATA UANG MASUK/KELUAR & DETAIL BALANS -->
-        <div id="screen-account" class="screen">
-            <div class="account-card">
-                <div class="acc-header">
-                    <div class="acc-title">REKENING UTAMA</div>
-                </div>
-                <div class="balance-label">TOTAL SALDO</div>
-                <div class="balance-row">
-                    <div class="balance-amount" id="displayBalance">$3,566</div>
-                    <div class="balance-arrow" onclick="showScreen('expenses')">❯</div>
-                </div>
-                <div class="card-number">•••• •••• •••• 5643</div>
-            </div>
-
-            <!-- Form Penambahan Transaksi -->
-            <div class="transaction-form-box">
-                <div class="form-title">+ TAMBAH TRANSAKSI BARU</div>
-                <div class="form-row">
-                    <select id="txType" class="form-select">
-                        <option value="expense">Uang Keluar (-)</option>
-                        <option value="income">Uang Masuk (+)</option>
-                    </select>
-                    <input type="number" id="txAmount" class="form-input" placeholder="Jumlah ($)">
-                </div>
-                <div class="form-row">
-                    <input type="text" id="txTitle" class="form-input" placeholder="Keterangan (misal: Uber)">
-                    <select id="txCategory" class="form-select">
-                        <option value="SHOPS">Belanja</option>
-                        <option value="RESTAURANTS">Restoran</option>
-                        <option value="HEALTH">Kesehatan</option>
-                        <option value="TECHNOLOGY">Teknologi</option>
-                        <option value="WORK">Gaji/Kerja</option>
-                    </select>
-                </div>
-                <button class="btn-submit" onclick="addTransaction()">Simpan Transaksi</button>
-            </div>
-
-            <div class="filter-tabs">
-                <button class="filter-btn active" onclick="filterTransactions('ALL')">SEMUA</button>
-                <button class="filter-btn" onclick="filterTransactions('EXPENSE')">KELUAR</button>
-                <button class="filter-btn" onclick="filterTransactions('INCOME')">MASUK</button>
-            </div>
-
-            <div class="tx-container" id="txList">
-                <!-- Daftar Transaksi akan di-render dinamis melalui JS -->
-            </div>
-        </div>
-
-        <!-- LAYAR 3: RANGKUMAN SEMUA DATA -->
-        <div id="screen-expenses" class="screen">
-            <div style="display: flex; flex-direction: column; height: 100%;">
-                <div class="exp-header">
-                    <div class="back-icon" onclick="showScreen('account')">❮</div>
-                    <div class="exp-title">RANGKUMAN KEUNAGAN</div>
-                </div>
-
-                <!-- Kartu Ringkasan -->
-                <div class="summary-cards-grid">
-                    <div class="summary-card">
-                        <div class="summary-label">TOTAL MASUK</div>
-                        <div class="summary-val" style="color: #0f4c5c;" id="sumIncome">$0</div>
-                    </div>
-                    <div class="summary-card">
-                        <div class="summary-label">TOTAL KELUAR</div>
-                        <div class="summary-val" style="color: #e11d48;" id="sumExpense">$0</div>
-                    </div>
-                </div>
-
-                <div class="chart-section">
-                    <canvas id="expenseChart" height="140"></canvas>
-                </div>
-
-                <!-- Persentase Kategori -->
-                <div class="category-card">
-                    <div class="cat-card-title">PERSENTASE PENGELUARAN</div>
-                    <div id="categoryBreakdown">
-                        <!-- Data Persentase Kategori akan dirender di sini -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
+  <!-- Form Input Transaksi -->
+  <div class="card p-5 rounded-2xl shadow-lg space-y-3">
+    <h3 class="text-sm font-bold text-slate-200">Tambah Transaksi Baru</h3>
+    
+    <div class="space-y-2">
+      <input type="text" id="keterangan" placeholder="Keterangan (misal: Beli Kopi)" class="input-field w-full p-2.5 rounded-xl text-xs outline-none focus:border-indigo-500" />
+      <input type="number" id="nominal" placeholder="Nominal (misal: 25000)" class="input-field w-full p-2.5 rounded-xl text-xs outline-none focus:border-indigo-500" />
+      
+      <div class="grid grid-cols-2 gap-2">
+        <select id="jenis" class="input-field p-2.5 rounded-xl text-xs outline-none">
+          <option value="Masuk">Pemasukan (+)</option>
+          <option value="Keluar">Pengeluaran (-)</option>
+        </select>
+        <button onclick="tambahTransaksi()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold p-2.5 rounded-xl text-xs transition">
+          Simpan
+        </button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Data Awal Transaksi
-        let transactions = [
-            { id: 1, type: 'expense', title: 'UBER', amount: 56, category: 'SHOPS', date: '25 JUNE' },
-            { id: 2, type: 'expense', title: 'SHOPPING', amount: 67, category: 'SHOPS', date: '25 JUNE' },
-            { id: 3, type: 'expense', title: 'RESTAURANT', amount: 55, category: 'RESTAURANTS', date: '25 JUNE' },
-            { id: 4, type: 'expense', title: 'COFFE', amount: 2, category: 'RESTAURANTS', date: '21 JUNE' },
-            { id: 5, type: 'income', title: 'WORK', amount: 3425, category: 'WORK', date: '21 JUNE' },
-            { id: 6, type: 'expense', title: 'UBER', amount: 16, category: 'SHOPS', date: '21 JUNE' }
-        ];
+  <!-- Riwayat Transaksi -->
+  <div class="card p-5 rounded-2xl shadow-lg space-y-3">
+    <div class="flex justify-between items-center">
+      <h3 class="text-sm font-bold text-slate-200">Riwayat Transaksi</h3>
+      <button onclick="resetData()" class="text-[10px] text-rose-400 hover:underline">Reset Data</button>
+    </div>
+    <ul id="daftarTransaksi" class="divide-y divide-slate-800 text-xs">
+      <li class="py-3 text-center text-slate-500">Belum ada transaksi.</li>
+    </ul>
+  </div>
 
-        let currentFilter = 'ALL';
+  <!-- Script Logika Aplikasi -->
+  <script>
+    let dataTransaksi = JSON.parse(localStorage.getItem('keuangan_db')) || [];
 
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + screenId).classList.add('active');
+    function formatRupiah(angka) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+    }
 
-            document.querySelectorAll('.pres-tab-btn').forEach(btn => btn.classList.remove('active'));
-            const indexMap = { 'pin': 0, 'account': 1, 'expenses': 2 };
-            document.querySelectorAll('.pres-tab-btn')[indexMap[screenId]].classList.add('active');
+    function updateUI() {
+      const daftar = document.getElementById('daftarTransaksi');
+      daftar.innerHTML = '';
 
-            if (screenId === 'expenses') {
-                updateSummaryAndChart();
-            }
-        }
+      let masuk = 0;
+      let keluar = 0;
 
-        function pressKey(key) {
-            if (key !== 'back' && key !== '?') {
-                setTimeout(() => showScreen('account'), 200);
-            }
-        }
+      if (dataTransaksi.length === 0) {
+        daftar.innerHTML = '<li class="py-3 text-center text-slate-500">Belum ada transaksi.</li>';
+      } else {
+        dataTransaksi.forEach((item, index) => {
+          if (item.jenis === 'Masuk') masuk += item.nominal;
+          if (item.jenis === 'Keluar') keluar += item.nominal;
 
-        // Render Riwayat Transaksi & Hitung Saldo
-        function renderData() {
-            const txListEl = document.getElementById('txList');
-            txListEl.innerHTML = '';
+          const li = document.createElement('li');
+          li.className = 'py-2.5 flex justify-between items-center';
+          li.innerHTML = `
+            <div>
+              <p class="font-medium text-slate-200">${item.keterangan}</p>
+              <p class="text-[10px] text-slate-500">${item.tanggal}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-bold ${item.jenis === 'Masuk' ? 'text-emerald-400' : 'text-rose-400'}">
+                ${item.jenis === 'Masuk' ? '+' : '-'} ${formatRupiah(item.nominal)}
+              </p>
+              <button onclick="hapusSatu(${index})" class="text-[9px] text-slate-600 hover:text-rose-400">Hapus</button>
+            </div>
+          `;
+          daftar.appendChild(li);
+        });
+      }
 
-            let totalBalance = 0;
-            let filteredTx = transactions.filter(t => {
-                if (currentFilter === 'EXPENSE') return t.type === 'expense';
-                if (currentFilter === 'INCOME') return t.type === 'income';
-                return true;
-            });
+      document.getElementById('totalMasuk').innerText = formatRupiah(masuk);
+      document.getElementById('totalKeluar').innerText = formatRupiah(keluar);
+      document.getElementById('saldoTotal').innerText = formatRupiah(masuk - keluar);
 
-            // Hitung Total Saldo Keseluruhan
-            transactions.forEach(t => {
-                if (t.type === 'income') totalBalance += t.amount;
-                else totalBalance -= t.amount;
-            });
+      localStorage.setItem('keuangan_db', JSON.stringify(dataTransaksi));
+    }
 
-            document.getElementById('displayBalance').innerText = '$' + totalBalance.toLocaleString();
+    function tambahTransaksi() {
+      const ket = document.getElementById('keterangan').value.trim();
+      const nom = Number(document.getElementById('nominal').value);
+      const jns = document.getElementById('jenis').value;
 
-            // Tampilkan daftar transaksi
-            filteredTx.forEach(t => {
-                const item = document.createElement('div');
-                item.className = 'tx-item';
-                const isExpense = t.type === 'expense';
-                item.innerHTML = `
-                    <div>
-                        <div class="tx-name">${t.title}</div>
-                        <div class="tx-cat">${t.category} • ${t.date}</div>
-                    </div>
-                    <div class="tx-amount ${isExpense ? 'tx-expense' : 'tx-income'}">
-                        ${isExpense ? '-' : '+'} $${t.amount}
-                    </div>
-                `;
-                txListEl.appendChild(item);
-            });
-        }
+      if (!ket || !nom || nom <= 0) {
+        alert('Mohon isi keterangan dan nominal dengan benar!');
+        return;
+      }
 
-        // Tambah Data Transaksi Baru
-        function addTransaction() {
-            const type = document.getElementById('txType').value;
-            const amount = parseFloat(document.getElementById('txAmount').value);
-            const title = document.getElementById('txTitle').value.trim();
-            const category = document.getElementById('txCategory').value;
+      const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      dataTransaksi.unshift({ keterangan: ket, nominal: nom, jenis: jns, tanggal: tgl });
 
-            if (!amount || !title) {
-                alert('Silakan isi jumlah dan keterangan transaksi!');
-                return;
-            }
+      document.getElementById('keterangan').value = '';
+      document.getElementById('nominal').value = '';
+      updateUI();
+    }
 
-            const newTx = {
-                id: Date.now(),
-                type: type,
-                title: title.toUpperCase(),
-                amount: amount,
-                category: category,
-                date: 'HARI INI'
-            };
+    function hapusSatu(index) {
+      dataTransaksi.splice(index, 1);
+      updateUI();
+    }
 
-            transactions.unshift(newTx);
-            
-            // Reset Form Input
-            document.getElementById('txAmount').value = '';
-            document.getElementById('txTitle').value = '';
+    function resetData() {
+      if (confirm('Yakin ingin menghapus semua data?')) {
+        dataTransaksi = [];
+        updateUI();
+      }
+    }
 
-            renderData();
-        }
-
-        function filterTransactions(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderData();
-        }
-
-        // Rangkuman Data pada Layar 3
-        let chartInstance = null;
-        function updateSummaryAndChart() {
-            let totalIncome = 0;
-            let totalExpense = 0;
-            let catTotals = { SHOPS: 0, RESTAURANTS: 0, HEALTH: 0, TECHNOLOGY: 0 };
-
-            transactions.forEach(t => {
-                if (t.type === 'income') {
-                    totalIncome += t.amount;
-                } else {
-                    totalExpense += t.amount;
-                    if (catTotals[t.category] !== undefined) {
-                        catTotals[t.category] += t.amount;
-                    }
-                }
-            });
-
-            document.getElementById('sumIncome').innerText = '$' + totalIncome.toLocaleString();
-            document.getElementById('sumExpense').innerText = '$' + totalExpense.toLocaleString();
-
-            // Render Persentase Per Kategori
-            const catContainer = document.getElementById('categoryBreakdown');
-            catContainer.innerHTML = '';
-
-            for (let cat in catTotals) {
-                let percentage = totalExpense > 0 ? Math.round((catTotals[cat] / totalExpense) * 100) : 0;
-                catContainer.innerHTML += `
-                    <div class="cat-item">
-                        <div class="cat-name">${cat}</div>
-                        <div class="cat-percentage">${percentage}%</div>
-                    </div>
-                `;
-            }
-
-            // Render Grafik
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['21 Jun', '22 Jun', '23 Jun', '24 Jun', '25 Jun', 'Hari Ini'],
-                    datasets: [{
-                        data: [18, 25, 40, 30, 178, totalExpense],
-                        borderColor: '#0f4c5c',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { display: true }, y: { display: false } }
-                }
-            });
-        }
-
-        // Inisialisasi awal
-        renderData();
-    </script>
+    updateUI();
+  </script>
 </body>
 </html>
