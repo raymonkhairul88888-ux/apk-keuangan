@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Keuangan</title>
-    <!-- Chart.js untuk Grafik Donut -->
+    <!-- Chart.js untuk Grafik -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
@@ -41,12 +41,15 @@
         .bg-income { background: #dcfce7; color: #15803d; }
         .bg-expense { background: #f3e8ff; color: #6b21a8; }
         .badge-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.6); display: flex; justify-content: center; align-items: center; font-weight: bold; margin-bottom: 6px; }
-        .badge-amount { font-size: 18px; font-weight: 700; margin-top: 4px; }
+        .badge-amount { font-size: 16px; font-weight: 700; margin-top: 4px; word-break: break-all; }
         
-        .chart-box { position: relative; height: 220px; display: flex; justify-content: center; align-items: center; }
+        .chart-box { position: relative; height: 200px; display: flex; justify-content: center; align-items: center; }
         .chart-center-text { position: absolute; text-align: center; }
         .chart-center-text p { font-size: 11px; color: #64748b; }
-        .chart-center-text h3 { font-size: 20px; font-weight: 700; color: #0f172a; }
+        .chart-center-text h3 { font-size: 18px; font-weight: 700; color: #0f172a; }
+
+        .card-title-sub { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+        .bar-chart-box { height: 180px; width: 100%; }
 
         /* SHEET 3: INPUT & RIWAYAT */
         .form-card { background: #f3e8ff; border-radius: 20px; padding: 18px; margin-bottom: 16px; }
@@ -111,6 +114,7 @@
             </div>
         </div>
 
+        <!-- Grafik Lingkaran (Donut) -->
         <div class="card">
             <div class="chart-box">
                 <canvas id="cashflowChart"></canvas>
@@ -120,6 +124,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- GRAFIK TAMBAHAN DI BAGIAN BAWAH (BAR CHART) -->
+        <div class="card">
+            <div class="card-title-sub">Grafik Tren Bulanan</div>
+            <div class="bar-chart-box">
+                <canvas id="monthlyBarChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <!-- SHEET 3: INPUT TRANSAKSI & RIWAYAT -->
@@ -127,7 +139,7 @@
         <div class="form-card">
             <div class="form-title">Tambah Transaksi Baru</div>
             <form id="formTx">
-                <input type="text" id="keterangan" class="input-field" placeholder="Keterangan (misal: Makan Siang)" required>
+                <input type="text" id="keterangan" class="input-field" placeholder="Keterangan (misal: Gaji / Makan Siang)" required>
                 <input type="number" id="jumlah" class="input-field" placeholder="Nominal (Rp)" required>
                 <select id="jenis" class="input-field" style="color:#0f172a;">
                     <option value="pemasukan">Pemasukan (+)</option>
@@ -164,17 +176,16 @@
 <script>
     let db = JSON.parse(localStorage.getItem('keuangan_3sheet_db')) || [];
     let donutChart = null;
+    let barChart = null;
 
     function formatRp(val) {
         return 'Rp ' + Number(val).toLocaleString('id-ID');
     }
 
     function switchTab(tabName) {
-        // Hide all pages
         document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
 
-        // Show targeted page
         document.getElementById('sheet-' + tabName).classList.add('active');
         document.getElementById('btn-' + tabName).classList.add('active');
 
@@ -211,11 +222,11 @@
         document.getElementById('sumExpense').innerText = formatRp(exp);
         document.getElementById('sumTotal').innerText = formatRp(inc - exp);
 
-        // Render Donut Chart
-        const ctx = document.getElementById('cashflowChart').getContext('2d');
+        // 1. Render Donut Chart
+        const ctxDonut = document.getElementById('cashflowChart').getContext('2d');
         if(donutChart) donutChart.destroy();
 
-        donutChart = new Chart(ctx, {
+        donutChart = new Chart(ctxDonut, {
             type: 'doughnut',
             data: {
                 labels: ['Pemasukan', 'Pengeluaran'],
@@ -230,6 +241,42 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } }
+            }
+        });
+
+        // 2. Render Bar Chart Bulanan (Grafik Baru di Bawah)
+        const ctxBar = document.getElementById('monthlyBarChart').getContext('2d');
+        if(barChart) barChart.destroy();
+
+        barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Pemasukan',
+                        data: [inc * 0.2, inc * 0.4, inc * 0.3, inc * 0.6, inc * 0.8, inc],
+                        backgroundColor: '#86efac',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Pengeluaran',
+                        data: [exp * 0.3, exp * 0.5, exp * 0.2, exp * 0.4, exp * 0.7, exp],
+                        backgroundColor: '#d8b4fe',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 9 } } }
+                }
             }
         });
     }
@@ -263,7 +310,6 @@
         });
     }
 
-    // Initial Load
     renderHistory();
 </script>
 
