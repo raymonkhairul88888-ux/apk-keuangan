@@ -35,8 +35,8 @@
 
     /* TOMBOL KEMBALI GLOSSY 3D (HITAM DENGAN IKON PUTIH) */
     .btn-back-glossy {
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 30%, #4b5563 0%, #1f2937 60%, #000000 100%);
       border: 2px solid #9ca3af;
@@ -58,25 +58,62 @@
       content: '';
       position: absolute;
       top: 3px;
-      left: 6px;
-      width: 14px;
-      height: 7px;
+      left: 5px;
+      width: 12px;
+      height: 6px;
       background: rgba(255, 255, 255, 0.75);
       border-radius: 10px 10px 5px 5px;
       transform: rotate(-25deg);
     }
-    .btn-back-glossy::after {
-      content: '';
-      position: absolute;
-      bottom: 4px;
-      right: 6px;
-      width: 5px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 50%;
-    }
     .btn-back-glossy:hover {
       transform: scale(1.08);
+    }
+
+    /* TOMBOL POWER / TOGGLE HAPUS GLOSSY KECIL */
+    .btn-power-glossy {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #f1f5f9 0%, #cbd5e1 60%, #94a3b8 100%);
+      border: 2px solid #cbd5e1;
+      box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.15), 
+        inset 0 2px 3px rgba(255, 255, 255, 0.9),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      outline: none;
+      color: #64748b;
+    }
+    /* KETIKA AKTIF (WARNA BIRU MENYALA DENGAN GLOW) */
+    .btn-power-glossy.active {
+      background: radial-gradient(circle at 35% 30%, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+      border-color: #7dd3fc;
+      box-shadow: 
+        0 0 10px rgba(2, 132, 199, 0.6), 
+        0 3px 6px rgba(0, 0, 0, 0.25), 
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      color: #ffffff;
+    }
+    .btn-power-glossy::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      width: 10px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 10px 10px 5px 5px;
+      transform: rotate(-25deg);
+    }
+    .btn-power-glossy:hover {
+      transform: scale(1.1);
     }
 
     /* Tombol Home Glossy 3D (Orange) */
@@ -108,16 +145,6 @@
       background: rgba(255, 255, 255, 0.8);
       border-radius: 10px 10px 5px 5px;
       transform: rotate(-25deg);
-    }
-    .btn-home-glossy::after {
-      content: '';
-      position: absolute;
-      bottom: 4px;
-      right: 7px;
-      width: 6px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 50%;
     }
     .btn-home-glossy:hover {
       transform: scale(1.08);
@@ -229,12 +256,11 @@
     <!-- ==================== TAMPILAN 2: HALAMAN UANG KELUAR ==================== -->
     <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden">
       <div class="flex items-center justify-between pb-1">
-        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
           <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
         <span class="text-xs font-extrabold text-rose-600 uppercase tracking-wider">Input Uang Keluar</span>
-        <div class="w-10"></div>
+        <div class="w-8"></div>
       </div>
 
       <div class="bg-gradient-to-br from-rose-700 to-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
@@ -273,12 +299,11 @@
     <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK ==================== -->
     <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden">
       <div class="flex items-center justify-between pb-1">
-        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
           <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
         <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Input Uang Masuk</span>
-        <div class="w-10"></div>
+        <div class="w-8"></div>
       </div>
 
       <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
@@ -316,14 +341,18 @@
     <!-- ==================== TAMPILAN KHUSUS: LAPORAN DATA TRANSAKSI ==================== -->
     <div id="tampilanKhususData" class="space-y-4 flex-1 flex flex-col hidden">
       
-      <!-- HEADER NAVIGASI -->
+      <!-- HEADER NAVIGASI WITH POWER BUTTON -->
       <div class="flex items-center justify-between pb-1">
-        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
           <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
-        <h1 class="text-xs font-extrabold text-slate-800 tracking-wide uppercase">LAPORAN DATA TRANSAKSI</h1>
-        <div class="w-10"></div>
+        
+        <h1 class="text-[11px] font-extrabold text-slate-800 tracking-tight uppercase">LAPORAN DATA TRANSAKSI</h1>
+        
+        <!-- TOMBOL POWER KECIL UNTUK MENGONTROL MODUS HAPUS -->
+        <button onclick="toggleDeleteMode()" id="btnPowerHapus" class="btn-power-glossy" title="Kontrol Fitur Hapus">
+          <i data-lucide="power" class="w-3.5 h-3.5"></i>
+        </button>
       </div>
 
       <!-- KARTU RINGKASAN GRADASI -->
@@ -378,9 +407,21 @@
 
     let activeFilter = 'MASUK';
     let chartInstance = null;
+    let isDeleteAllowed = false; // Status mode hapus (Default: Tidak dapat dihapus)
 
     function formatRupiah(angka) {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+    }
+
+    function toggleDeleteMode() {
+      isDeleteAllowed = !isDeleteAllowed;
+      const btn = document.getElementById('btnPowerHapus');
+      if (isDeleteAllowed) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+      renderList();
     }
 
     function bukaHalaman(halamanId) {
@@ -483,6 +524,13 @@
           const textColor = isKeluar ? 'text-rose-600' : 'text-emerald-600';
           const prefix = isKeluar ? '- ' : '+ ';
 
+          // Tombol hapus hanya muncul jika isDeleteAllowed bernilai true
+          const deleteButtonHtml = isDeleteAllowed ? `
+            <button onclick="deleteItem(${item.id})" class="text-rose-400 hover:text-rose-600 p-1 transition animate-fade-in" title="Hapus">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          ` : '';
+
           const cardHtml = `
             <div class="transaction-card flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -498,9 +546,7 @@
                 <div>
                   <p class="text-[11px] font-extrabold ${textColor}">${prefix}${formatRupiah(item.nominal)}</p>
                 </div>
-                <button onclick="deleteItem(${item.id})" class="text-slate-300 hover:text-rose-500 p-1 transition" title="Hapus">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
+                ${deleteButtonHtml}
               </div>
             </div>
           `;
@@ -533,6 +579,7 @@
     }
 
     function deleteItem(id) {
+      if (!isDeleteAllowed) return;
       dataTransaksi = dataTransaksi.filter(item => item.id !== id);
       updateUI();
     }
