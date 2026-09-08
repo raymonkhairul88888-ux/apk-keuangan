@@ -25,13 +25,35 @@
     }
 
     .input-custom { 
-      background-color: #ffffff; 
+      background-color: rgba(255, 255, 255, 0.9); 
       border: 1px solid #cbd5e1; 
       color: #1e293b; 
     }
     .input-custom:focus { 
       outline: none; 
       border-color: #0d4b56; 
+    }
+
+    /* CSS WATERMARK LOGO LENGKAP */
+    .watermark-bg {
+      position: relative;
+    }
+    .watermark-bg::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      height: 280px;
+      /* SVG Logo Piston, Gear, & Kunci Pas Otomotif */
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500' fill='none' stroke='%230d4b56' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'><circle cx='250' cy='250' r='120' stroke-dasharray='15,10'/><circle cx='250' cy='250' r='80'/><path d='M100,100 L400,400 M400,100 L100,400' stroke-width='22'/><rect x='200' y='60' width='100' height='70' rx='10' fill='%230d4b56'/><rect x='200' y='370' width='100' height='70' rx='10' fill='%230d4b56'/><rect x='60' y='200' width='70' height='100' rx='10' fill='%230d4b56'/><rect x='370' y='200' width='70' height='100' rx='10' fill='%230d4b56'/><path d='M180,250 L320,250' stroke-width='30'/></svg>");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* TOMBOL KEMBALI GLOSSY 3D */
@@ -161,12 +183,13 @@
 
     /* Card Transaksi */
     .transaction-card {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       border: 1px solid #f1f5f9;
       border-radius: 16px;
       padding: 12px 14px;
       transition: all 0.2s ease;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      backdrop-filter: blur(2px);
     }
 
     .custom-scroll::-webkit-scrollbar {
@@ -181,13 +204,13 @@
 <body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
 
   <!-- Container Mockup HP -->
-  <div class="w-full max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden p-4 border border-slate-200 min-h-[680px] flex flex-col justify-between">
+  <div class="w-full max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden p-4 border border-slate-200 min-h-[680px] flex flex-col justify-between relative">
     
     <!-- ==================== TAMPILAN 1: DASHBOARD UTAMA ==================== -->
-    <div id="tampilanUtama" class="space-y-3 flex-1 flex flex-col">
+    <div id="tampilanUtama" class="space-y-3 flex-1 flex flex-col watermark-bg">
       
       <!-- Card Header -->
-      <div class="app-card p-4 rounded-[24px] shadow-sm flex items-center justify-between relative shrink-0">
+      <div class="app-card p-4 rounded-[24px] shadow-sm flex items-center justify-between relative shrink-0 z-10">
         <div class="space-y-0.5">
           <div class="text-[10px] font-bold tracking-widest uppercase opacity-75">
             CATATAN ASISTEN
@@ -203,7 +226,7 @@
       </div>
 
       <!-- KOTAK PETAK BESAR -->
-      <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 shadow-sm flex-1 flex flex-col justify-between space-y-3">
+      <div class="bg-slate-50/80 backdrop-blur-xs p-4 rounded-[24px] border border-slate-100 shadow-sm flex-1 flex flex-col justify-between space-y-3 z-10">
         
         <!-- BAGIAN 1: RODA PERPUTARAN (GRAFIK LINGKARAN) -->
         <div class="space-y-2">
@@ -228,7 +251,7 @@
 
         <hr class="border-slate-200 my-1">
 
-        <!-- BAGIAN 2: SIKLUS KEUANGAN (PIE CHART MULTI-KATEGORI BERSTYLE PIE BOLA 3D) -->
+        <!-- BAGIAN 2: SIKLUS KEUANGAN -->
         <div class="space-y-2 flex-1 flex flex-col justify-end">
           <div class="flex justify-between items-center">
             <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">SIKLUS KEUANGAN</h3>
@@ -245,8 +268,8 @@
     </div>
 
     <!-- ==================== TAMPILAN 2: HALAMAN UANG KELUAR ==================== -->
-    <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden">
-      <div class="flex items-center justify-between pb-1">
+    <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden watermark-bg">
+      <div class="flex items-center justify-between pb-1 relative z-10">
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
           <i data-lucide="undo-2" class="w-4 h-4 text-white"></i>
         </button>
@@ -254,14 +277,14 @@
         <div class="w-8"></div>
       </div>
 
-      <div class="bg-gradient-to-br from-rose-700 to-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
+      <div class="bg-gradient-to-br from-rose-700 to-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden z-10">
         <div>
           <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG KELUAR</p>
           <h2 id="totalKeluarPage" class="text-2xl font-extrabold tracking-tight pt-1 text-rose-200">Rp 0</h2>
         </div>
       </div>
 
-      <div class="space-y-3 pt-1">
+      <div class="space-y-3 pt-1 relative z-10">
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
           <input type="number" id="nominalKeluar" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
@@ -288,8 +311,8 @@
     </div>
 
     <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK ==================== -->
-    <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden">
-      <div class="flex items-center justify-between pb-1">
+    <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden watermark-bg">
+      <div class="flex items-center justify-between pb-1 relative z-10">
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
           <i data-lucide="undo-2" class="w-4 h-4 text-white"></i>
         </button>
@@ -297,14 +320,14 @@
         <div class="w-8"></div>
       </div>
 
-      <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
+      <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden z-10">
         <div>
           <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG MASUK</p>
           <h2 id="totalMasukPage" class="text-2xl font-extrabold tracking-tight pt-1 text-emerald-200">Rp 0</h2>
         </div>
       </div>
 
-      <div class="space-y-3 pt-1">
+      <div class="space-y-3 pt-1 relative z-10">
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
           <input type="number" id="nominalMasuk" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
@@ -330,10 +353,10 @@
     </div>
 
     <!-- ==================== TAMPILAN KHUSUS: LAPORAN DATA TRANSAKSI ==================== -->
-    <div id="tampilanKhususData" class="space-y-4 flex-1 flex flex-col hidden">
+    <div id="tampilanKhususData" class="space-y-4 flex-1 flex flex-col hidden watermark-bg">
       
       <!-- HEADER ATAS DISATUKAN MENJADI SATU KOTAK PIL DENGAN TEKS DI TENGAH -->
-      <div class="header-unified-pill">
+      <div class="header-unified-pill relative z-10">
         <!-- Tombol Kembali Glossy -->
         <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali ke Dashboard Utama">
           <i data-lucide="undo-2" class="w-3.5 h-3.5 text-white"></i>
@@ -349,7 +372,7 @@
       </div>
 
       <!-- KARTU RINGKASAN: KELUAR DI KIRI, MASUK DI KANAN -->
-      <div class="grid grid-cols-2 gap-2.5">
+      <div class="grid grid-cols-2 gap-2.5 relative z-10">
         <!-- UANG KELUAR (KIRI) -->
         <div class="bg-gradient-to-br from-rose-600 to-rose-800 text-white p-3.5 rounded-2xl shadow-sm relative overflow-hidden">
           <div class="absolute -right-2 -bottom-2 opacity-15">
@@ -370,14 +393,14 @@
       </div>
 
       <!-- TAB FILTER SEGMENTED CONTROL: SEMUA DI TENGAH DENGAN POSISI UTAMA -->
-      <div class="segmented-control">
+      <div class="segmented-control relative z-10">
         <button onclick="changeFilter('SEMUA')" id="tab-SEMUA" class="segmented-btn active">SEMUA</button>
         <button onclick="changeFilter('Keluar')" id="tab-Keluar" class="segmented-btn">KELUAR</button>
         <button onclick="changeFilter('Masuk')" id="tab-Masuk" class="segmented-btn">MASUK</button>
       </div>
 
       <!-- DAFTAR TRANSAKSI (LIST CARDS) -->
-      <div class="flex-1 overflow-y-auto custom-scroll pr-1">
+      <div class="flex-1 overflow-y-auto custom-scroll pr-1 relative z-10">
         <div id="daftarTransaksi" class="space-y-2.5"></div>
       </div>
 
@@ -386,7 +409,6 @@
   </div>
 
   <script>
-    // Register ChartDataLabels plugin
     if (typeof ChartDataLabels !== 'undefined') {
       Chart.register(ChartDataLabels);
     }
@@ -446,7 +468,6 @@
     }
 
     function renderGrafik() {
-      // 1. GRAFIK DOUGHNUT (RODA PERPUTARAN)
       const ctx = document.getElementById('grafikKeuangan').getContext('2d');
       let masuk = 0, keluar = 0;
 
@@ -479,7 +500,6 @@
         }
       });
 
-      // 2. GRAFIK PIE MODEL BARU (SESUAI GAMBAR REFERENSI DENGAN PERSENTASE)
       const ctxSiklus = document.getElementById('grafikSiklusBulanan').getContext('2d');
       if (chartSiklusInstance) chartSiklusInstance.destroy();
 
@@ -490,34 +510,27 @@
           datasets: [{
             data: [30, 25, 15, 15, 11, 4],
             backgroundColor: [
-              '#e65100', // Oranye Tua (30%)
-              '#558b2f', // Hijau (25%)
-              '#880e4f', // Merah Tua/Burgundy (15%)
-              '#fbc02d', // Kuning Emas (15%)
-              '#00838f', // Toska / Teal (11%)
-              '#1a237e'  // Biru Gelap (4%)
+              '#e65100',
+              '#558b2f',
+              '#880e4f',
+              '#fbc02d',
+              '#00838f',
+              '#1a237e'
             ],
             borderWidth: 2,
             borderColor: '#ffffff',
-            offset: [5, 5, 5, 12, 5, 5] // Efek irisan menonjol seperti di gambar
+            offset: [5, 5, 5, 12, 5, 5]
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: false
-            },
+            legend: { display: false },
             datalabels: {
               color: '#ffffff',
-              font: {
-                weight: 'bold',
-                size: 10
-              },
-              formatter: (value) => {
-                return value + '%';
-              }
+              font: { weight: 'bold', size: 10 },
+              formatter: (value) => value + '%'
             }
           }
         }
