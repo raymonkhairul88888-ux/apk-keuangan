@@ -28,9 +28,6 @@
       background-color: rgba(255, 255, 255, 0.16);
       border-color: rgba(255, 255, 255, 0.3);
     }
-    .btn-seamless:active {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
     .btn-emerald { 
       background-color: #059669; 
       color: #ffffff; 
@@ -48,8 +45,8 @@
       border-color: #0d4b56; 
     }
     .tab-active { 
-      border-bottom: 2px solid #059669; 
-      color: #059669; 
+      border-bottom: 2px solid #0d4b56; 
+      color: #0d4b56; 
       font-weight: 700; 
     }
   </style>
@@ -75,13 +72,13 @@
           <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN</p>
         </div>
 
-        <!-- Tombol Senyawa dengan Background -->
+        <!-- Tombol Senyawa -->
         <div class="grid grid-cols-2 gap-2.5 pt-1">
           <button onclick="bukaHalaman('tampilanUangKeluar')" class="btn-seamless py-2.5 px-2 rounded-2xl text-[10px] font-bold transition-all text-center flex items-center justify-center leading-tight">
             - UANG KELUAR
           </button>
           <button onclick="bukaHalaman('tampilanUangMasuk')" class="btn-seamless py-2.5 px-2 rounded-2xl text-[10px] font-bold transition-all text-center flex items-center justify-center leading-tight">
-            + UANG MASUK & RIWAYAT
+            + UANG MASUK
           </button>
         </div>
       </div>
@@ -91,8 +88,8 @@
         <div class="flex justify-between items-center">
           <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">GRAFIK KEUANGAN</h3>
           
-          <!-- TOMBOL TRANSAKSI (KLIK KE RIWAYAT / DATA SEMUANYA) -->
-          <button onclick="bukaHalaman('tampilanUangMasuk')" class="text-[10px] font-bold text-teal-600 hover:text-teal-800 hover:underline transition flex items-center gap-0.5 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+          <!-- TOMBOL TRANSAKSI (KLIK LANGSUNG KE KHUSUS DATA TRANSAKSI) -->
+          <button onclick="bukaHalaman('tampilanKhususData')" class="text-[10px] font-bold text-teal-700 hover:text-teal-900 transition flex items-center gap-1 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200 shadow-xs">
             <span id="labelTotalTransaksi">0 Transaksi</span>
             <span>&rsaquo;</span>
           </button>
@@ -107,8 +104,6 @@
 
     <!-- ==================== TAMPILAN 2: HALAMAN UANG KELUAR ==================== -->
     <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden">
-      
-      <!-- Header Halaman Uang Keluar -->
       <div class="flex items-center justify-between pb-2 border-b border-slate-100">
         <button onclick="bukaHalaman('tampilanUtama')" class="text-slate-600 font-bold text-xs flex items-center gap-1 hover:text-slate-900">
           &larr; Kembali
@@ -117,7 +112,6 @@
         <div class="w-8"></div>
       </div>
 
-      <!-- Card Total Pengeluaran -->
       <div class="bg-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative">
         <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
           <span>PENGELUARAN</span>
@@ -128,18 +122,15 @@
         </div>
       </div>
 
-      <!-- Form Input Data Uang Keluar -->
       <div class="space-y-3 pt-1">
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
           <input type="number" id="nominalKeluar" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
         </div>
-
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
           <input type="text" id="keteranganKeluar" placeholder="Keterangan (misal: Jajan)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
         </div>
-
         <div>
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
           <select id="kategoriKeluar" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
@@ -149,77 +140,98 @@
             <option value="GAJI">Lain-lain</option>
           </select>
         </div>
-
         <div class="pt-2">
           <button onclick="tambahTransaksiSpesifik('Keluar')" class="bg-rose-600 hover:bg-rose-700 text-white w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
             Simpan Uang Keluar
           </button>
         </div>
       </div>
-
     </div>
 
-    <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK & DAFTAR DATA ==================== -->
-    <div id="tampilanUangMasuk" class="space-y-3 flex-1 hidden">
-      
-      <!-- Header Halaman Uang Masuk -->
+    <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK ==================== -->
+    <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden">
       <div class="flex items-center justify-between pb-2 border-b border-slate-100">
         <button onclick="bukaHalaman('tampilanUtama')" class="text-slate-600 font-bold text-xs flex items-center gap-1 hover:text-slate-900">
           &larr; Kembali
         </button>
-        <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Uang Masuk & Data</span>
+        <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Input Uang Masuk</span>
         <div class="w-8"></div>
       </div>
 
-      <!-- Card Total Pemasukan -->
-      <div class="bg-emerald-800 text-white p-4 rounded-[20px] shadow-md space-y-1 relative">
-        <div class="flex justify-between items-center text-[9px] font-bold tracking-widest uppercase opacity-80">
+      <div class="bg-emerald-800 text-white p-5 rounded-[24px] shadow-md space-y-2 relative">
+        <div class="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase opacity-80">
           <span>PEMASUKAN</span>
         </div>
         <div>
-          <p class="text-[9px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG MASUK</p>
-          <h2 id="totalMasuk" class="text-xl font-extrabold tracking-tight pt-0.5 text-emerald-200">Rp 0</h2>
+          <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG MASUK</p>
+          <h2 id="totalMasuk" class="text-2xl font-extrabold tracking-tight pt-1 text-emerald-200">Rp 0</h2>
         </div>
       </div>
 
-      <!-- Form Input Data Uang Masuk -->
-      <div class="space-y-2 pt-1 border-b border-slate-100 pb-3">
-        <div class="grid grid-cols-2 gap-2">
-          <input type="number" id="nominalMasuk" placeholder="Jumlah (Rp)" class="input-custom w-full p-2 rounded-xl text-xs font-medium" />
-          <select id="kategoriMasuk" class="input-custom w-full p-2 rounded-xl text-xs font-semibold">
+      <div class="space-y-3 pt-1">
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
+          <input type="number" id="nominalMasuk" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
+          <input type="text" id="keteranganMasuk" placeholder="Keterangan (misal: Gaji)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
+          <select id="kategoriMasuk" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
             <option value="GAJI">Gaji</option>
             <option value="BONUS">Bonus</option>
             <option value="INVESTASI">Hasil Usaha</option>
           </select>
         </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="keteranganMasuk" placeholder="Keterangan (misal: Gaji)" class="input-custom w-full p-2 rounded-xl text-xs font-medium" />
-          <button onclick="tambahTransaksiSpesifik('Masuk')" class="btn-emerald w-full p-2 rounded-xl text-xs font-bold transition shadow-sm">
-            Simpan Masuk
+        <div class="pt-2">
+          <button onclick="tambahTransaksiSpesifik('Masuk')" class="btn-emerald w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
+            Simpan Uang Masuk
           </button>
         </div>
       </div>
+    </div>
 
-      <!-- DATA RIWAYAT TRANSAKSI -->
-      <div class="space-y-2 px-1">
-        <div class="flex space-x-5 text-xs border-b border-slate-100 pb-1.5">
+    <!-- ==================== TAMPILAN KHUSUS: KHUSUS RIWAYAT DATA KELUAR MASUK ==================== -->
+    <div id="tampilanKhususData" class="space-y-4 flex-1 hidden">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <button onclick="bukaHalaman('tampilanUtama')" class="text-slate-600 font-bold text-xs flex items-center gap-1 hover:text-slate-900">
+          &larr; Kembali
+        </button>
+        <span class="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Laporan Data Transaksi</span>
+        <div class="w-8"></div>
+      </div>
+
+      <!-- Ringkasan Singkat -->
+      <div class="grid grid-cols-2 gap-2 text-white">
+        <div class="bg-emerald-700 p-3 rounded-2xl shadow-xs">
+          <p class="text-[9px] font-bold opacity-80 uppercase">Total Masuk</p>
+          <p id="ringkasanMasuk" class="text-xs font-extrabold pt-0.5">Rp 0</p>
+        </div>
+        <div class="bg-rose-700 p-3 rounded-2xl shadow-xs">
+          <p class="text-[9px] font-bold opacity-80 uppercase">Total Keluar</p>
+          <p id="ringkasanKeluar" class="text-xs font-extrabold pt-0.5">Rp 0</p>
+        </div>
+      </div>
+
+      <!-- Filter Tab & Daftar Transaksi -->
+      <div class="space-y-3 pt-1">
+        <div class="flex space-x-6 text-xs border-b border-slate-100 pb-2">
           <button onclick="setFilter('SEMUA')" id="tab-SEMUA" class="tab-active pb-1 text-[11px]">SEMUA</button>
           <button onclick="setFilter('Keluar')" id="tab-Keluar" class="text-slate-400 font-semibold pb-1 text-[11px]">KELUAR</button>
           <button onclick="setFilter('Masuk')" id="tab-Masuk" class="text-slate-400 font-semibold pb-1 text-[11px]">MASUK</button>
         </div>
 
-        <!-- Riwayat Transaksi List -->
-        <ul id="daftarTransaksi" class="space-y-2 text-xs max-h-[190px] overflow-y-auto pr-1">
-          <li class="py-4 text-center text-slate-400 text-xs">Belum ada transaksi.</li>
+        <!-- Tempat Khusus Membaca Seluruh Data -->
+        <ul id="daftarTransaksi" class="space-y-2 text-xs max-h-[340px] overflow-y-auto pr-1">
+          <li class="py-4 text-center text-slate-400 text-xs">Belum ada data transaksi.</li>
         </ul>
       </div>
-
     </div>
 
   </div>
 
-  <!-- Script Logika Aplikasi & Grafik -->
   <script>
     const dataAwal = [
       { keterangan: 'GAJI', nominal: 89000000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
@@ -248,6 +260,7 @@
       document.getElementById('tampilanUtama').classList.add('hidden');
       document.getElementById('tampilanUangKeluar').classList.add('hidden');
       document.getElementById('tampilanUangMasuk').classList.add('hidden');
+      document.getElementById('tampilanKhususData').classList.add('hidden');
       
       document.getElementById(halamanId).classList.remove('hidden');
     }
@@ -321,6 +334,10 @@
 
       document.getElementById('totalMasuk').innerText = formatRupiah(masuk);
       document.getElementById('totalKeluar').innerText = formatRupiah(keluar);
+      
+      // Update Ringkasan Laporan Khusus
+      document.getElementById('ringkasanMasuk').innerText = formatRupiah(masuk);
+      document.getElementById('ringkasanKeluar').innerText = formatRupiah(keluar);
 
       const dataFiltered = dataTransaksi.filter(item => {
         if (filterAktif === 'SEMUA') return true;
@@ -332,7 +349,7 @@
       } else {
         dataFiltered.forEach((item, index) => {
           const li = document.createElement('li');
-          li.className = 'flex justify-between items-center py-1 border-b border-dashed border-slate-100 last:border-none';
+          li.className = 'flex justify-between items-center py-2 px-1 border-b border-dashed border-slate-200 last:border-none';
           
           const isKeluar = item.jenis === 'Keluar';
           const tAnda = isKeluar ? '- ' : '+ ';
@@ -376,6 +393,7 @@
       document.getElementById('nominal' + suffix).value = '';
       
       updateUI();
+      bukaHalaman('tampilanKhususData');
     }
 
     function hapusSatu(index) {
