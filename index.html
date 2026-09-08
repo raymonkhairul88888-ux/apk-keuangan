@@ -33,7 +33,53 @@
       border-color: #0d4b56; 
     }
 
-    /* Tombol Home Glossy 3D */
+    /* TOMBOL KEMBALI GLOSSY 3D (HITAM DENGAN IKON PUTIH) */
+    .btn-back-glossy {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #4b5563 0%, #1f2937 60%, #000000 100%);
+      border: 2px solid #9ca3af;
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.35), 
+        inset 0 3px 5px rgba(255, 255, 255, 0.7),
+        inset 0 -3px 5px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.15s ease;
+      padding: 0;
+      outline: none;
+    }
+    .btn-back-glossy::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      width: 14px;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 10px 10px 5px 5px;
+      transform: rotate(-25deg);
+    }
+    .btn-back-glossy::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      right: 6px;
+      width: 5px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+    }
+    .btn-back-glossy:hover {
+      transform: scale(1.08);
+    }
+
+    /* Tombol Home Glossy 3D (Orange) */
     .btn-home-glossy {
       width: 40px;
       height: 40px;
@@ -183,12 +229,12 @@
     <!-- ==================== TAMPILAN 2: HALAMAN UANG KELUAR ==================== -->
     <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden">
       <div class="flex items-center justify-between pb-1">
-        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-          Kembali
+        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
+        <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
+          <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
         <span class="text-xs font-extrabold text-rose-600 uppercase tracking-wider">Input Uang Keluar</span>
-        <div class="w-12"></div>
+        <div class="w-10"></div>
       </div>
 
       <div class="bg-gradient-to-br from-rose-700 to-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
@@ -227,12 +273,12 @@
     <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK ==================== -->
     <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden">
       <div class="flex items-center justify-between pb-1">
-        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-          Kembali
+        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
+        <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
+          <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
         <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Input Uang Masuk</span>
-        <div class="w-12"></div>
+        <div class="w-10"></div>
       </div>
 
       <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
@@ -272,12 +318,12 @@
       
       <!-- HEADER NAVIGASI -->
       <div class="flex items-center justify-between pb-1">
-        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-          Kembali
+        <!-- TOMBOL KEMBALI GLOSSY HITAM -->
+        <button onclick="bukaHalaman('tampilanUtama')" class="btn-back-glossy" title="Kembali">
+          <i data-lucide="undo-2" class="w-4 h-4 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"></i>
         </button>
         <h1 class="text-xs font-extrabold text-slate-800 tracking-wide uppercase">LAPORAN DATA TRANSAKSI</h1>
-        <div class="w-12"></div>
+        <div class="w-10"></div>
       </div>
 
       <!-- KARTU RINGKASAN GRADASI -->
