@@ -94,7 +94,7 @@
       white-space: nowrap;
     }
 
-    /* SAKLAR TOGGLE HAPUS */
+    /* SAKLAR TOGGLE GEARED SETTINGS */
     .toggle-switch-circle {
       width: 32px;
       height: 32px;
@@ -341,9 +341,9 @@
         <!-- Teks Judul Tengah -->
         <span class="header-title-text">LAPORAN DATA TRANSAKSI</span>
 
-        <!-- Saklar Toggle Hapus -->
-        <div onclick="toggleDeleteMode()" id="toggleDeleteBtn" class="toggle-switch-circle" title="Aktifkan/Matikan Mode Hapus">
-          <i id="toggleDeleteIcon" data-lucide="power" class="w-4 h-4 text-slate-600"></i>
+        <!-- Tombol Pengaturan Gir (Gears) Kanan Atas -->
+        <div onclick="toggleDeleteMode()" id="toggleDeleteBtn" class="toggle-switch-circle" title="Mode Edit / Hapus Data">
+          <i id="toggleDeleteIcon" data-lucide="settings" class="w-4 h-4 text-slate-700"></i>
         </div>
       </div>
 
@@ -415,12 +415,12 @@
       
       if (isDeleteAllowed) {
         toggleBtn.classList.add('active');
-        toggleIcon.classList.remove('text-slate-600');
+        toggleIcon.classList.remove('text-slate-700');
         toggleIcon.classList.add('text-white');
       } else {
         toggleBtn.classList.remove('active');
         toggleIcon.classList.remove('text-white');
-        toggleIcon.classList.add('text-slate-600');
+        toggleIcon.classList.add('text-slate-700');
       }
       renderList();
     }
@@ -434,14 +434,12 @@
       document.getElementById(halamanId).classList.remove('hidden');
     }
 
-    // Fungsi membuka halaman data dengan filter spesifik (default: SEMUA)
     function bukaHalamanData(filterDefault = 'SEMUA') {
       bukaHalaman('tampilanKhususData');
       changeFilter(filterDefault);
     }
 
     function renderGrafik() {
-      // 1. GRAFIK DOUGHNUT (RODA PERPUTARAN)
       const ctx = document.getElementById('grafikKeuangan').getContext('2d');
       let masuk = 0, keluar = 0;
 
@@ -471,7 +469,6 @@
         }
       });
 
-      // 2. GRAFIK BATANG BULANAN (SIKLUS KEUANGAN)
       const ctxSiklus = document.getElementById('grafikSiklusBulanan').getContext('2d');
       if (chartSiklusInstance) chartSiklusInstance.destroy();
 
@@ -507,9 +504,7 @@
               grid: { display: false },
               ticks: { color: '#94a3b8', font: { size: 8, weight: 'bold' } }
             },
-            y: {
-              display: false
-            }
+            y: { display: false }
           }
         }
       });
