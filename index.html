@@ -90,7 +90,12 @@
       <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 shadow-sm space-y-2">
         <div class="flex justify-between items-center">
           <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">GRAFIK KEUANGAN</h3>
-          <span id="labelTotalTransaksi" class="text-[10px] font-bold text-slate-400">0 Transaksi</span>
+          
+          <!-- TOMBOL TRANSAKSI (KLIK KE RIWAYAT / DATA SEMUANYA) -->
+          <button onclick="bukaHalaman('tampilanUangMasuk')" class="text-[10px] font-bold text-teal-600 hover:text-teal-800 hover:underline transition flex items-center gap-0.5 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+            <span id="labelTotalTransaksi">0 Transaksi</span>
+            <span>&rsaquo;</span>
+          </button>
         </div>
         
         <div class="relative flex items-center justify-center h-48 w-full pt-2">
