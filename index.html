@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Data Transaksi Modern</title>
+  <title>Aplikasi Keuangan Modern</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Library Chart.js untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { 
       background-color: #e2e8f0; 
@@ -16,7 +18,66 @@
       font-family: 'Plus Jakarta Sans', sans-serif; 
     }
 
-    /* Tab Filter Kapsul (Segmented Control) */
+    .app-card { 
+      background-color: #0d4b56; 
+      color: #ffffff; 
+    }
+
+    .input-custom { 
+      background-color: #ffffff; 
+      border: 1px solid #cbd5e1; 
+      color: #1e293b; 
+    }
+    .input-custom:focus { 
+      outline: none; 
+      border-color: #0d4b56; 
+    }
+
+    /* Tombol Home Glossy 3D */
+    .btn-home-glossy {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fb923c 0%, #ea580c 60%, #9a3412 100%);
+      border: 2px solid #fdba74;
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3), 
+        inset 0 3px 5px rgba(255, 255, 255, 0.6),
+        inset 0 -3px 5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.15s ease;
+    }
+    .btn-home-glossy::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      width: 14px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 10px 10px 5px 5px;
+      transform: rotate(-25deg);
+    }
+    .btn-home-glossy::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      right: 7px;
+      width: 6px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+    }
+    .btn-home-glossy:hover {
+      transform: scale(1.08);
+    }
+
+    /* Segmented Control / Tab Kapsul */
     .segmented-control {
       background-color: #f1f5f9;
       padding: 4px;
@@ -40,7 +101,7 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
     }
 
-    /* Card Transaksi Custom */
+    /* Card Transaksi */
     .transaction-card {
       background: #ffffff;
       border: 1px solid #f1f5f9;
@@ -72,12 +133,146 @@
     
     <div id="root"></div>
 
-    <!-- HALAMAN: LAPORAN DATA TRANSAKSI -->
-    <div class="space-y-4 flex-1 flex flex-col">
+    <!-- ==================== TAMPILAN 1: DASHBOARD UTAMA ==================== -->
+    <div id="tampilanUtama" class="space-y-4 flex-1">
+      
+      <!-- Card Header -->
+      <div class="app-card p-5 rounded-[24px] shadow-sm flex items-center justify-between relative">
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-bold tracking-widest uppercase opacity-75">
+            CATATAN ASISTEN
+          </div>
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN</p>
+          </div>
+        </div>
+
+        <!-- TOMBOL HOME GLOSSY DI ATAS -->
+        <button onclick="bukaHalaman('tampilanKhususData')" class="btn-home-glossy" title="Buka Data Transaksi">
+          <i data-lucide="home" class="w-5 h-5 text-white drop-shadow-[0_2px_1px_rgba(0,0,0,0.3)]"></i>
+        </button>
+      </div>
+
+      <!-- GRAFIK KEUANGAN & NAVIGASI -->
+      <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 shadow-sm space-y-2">
+        <div class="flex justify-between items-center">
+          <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">RODA PERPUTARAN</h3>
+        </div>
+        
+        <div class="relative flex items-center justify-center h-44 w-full pt-1">
+          <canvas id="grafikKeuangan"></canvas>
+        </div>
+
+        <!-- LEGENDA BAWAH SEBAGAI TOMBOL NAVIGASI -->
+        <div class="flex justify-center items-center gap-4 pt-2">
+          <button onclick="bukaHalaman('tampilanUangMasuk')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-emerald-50 border border-transparent hover:border-emerald-200 transition group cursor-pointer">
+            <span class="w-3 h-3 bg-emerald-600 rounded-sm inline-block group-hover:scale-110 transition-transform"></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-emerald-700">Pemasukan</span>
+          </button>
+
+          <button onclick="bukaHalaman('tampilanUangKeluar')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-rose-50 border border-transparent hover:border-rose-200 transition group cursor-pointer">
+            <span class="w-3 h-3 bg-rose-600 rounded-sm inline-block group-hover:scale-110 transition-transform"></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-rose-700">Pengeluaran</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== TAMPILAN 2: HALAMAN UANG KELUAR ==================== -->
+    <div id="tampilanUangKeluar" class="space-y-4 flex-1 hidden">
+      <div class="flex items-center justify-between pb-1">
+        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          Kembali
+        </button>
+        <span class="text-xs font-extrabold text-rose-600 uppercase tracking-wider">Input Uang Keluar</span>
+        <div class="w-12"></div>
+      </div>
+
+      <div class="bg-gradient-to-br from-rose-700 to-rose-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG KELUAR</p>
+          <h2 id="totalKeluarPage" class="text-2xl font-extrabold tracking-tight pt-1 text-rose-200">Rp 0</h2>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
+          <input type="number" id="nominalKeluar" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
+          <input type="text" id="keteranganKeluar" placeholder="Keterangan (misal: Jajan)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
+          <select id="kategoriKeluar" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
+            <option value="BELANJA">Belanja</option>
+            <option value="RESTORAN">Restoran</option>
+            <option value="TRANSPORT">Transport</option>
+            <option value="LAIN-LAIN">Lain-lain</option>
+          </select>
+        </div>
+        <div class="pt-2">
+          <button onclick="tambahTransaksiSpesifik('Keluar')" class="bg-rose-600 hover:bg-rose-700 text-white w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
+            Simpan Uang Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAMPILAN 3: HALAMAN UANG MASUK ==================== -->
+    <div id="tampilanUangMasuk" class="space-y-4 flex-1 hidden">
+      <div class="flex items-center justify-between pb-1">
+        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          Kembali
+        </button>
+        <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Input Uang Masuk</span>
+        <div class="w-12"></div>
+      </div>
+
+      <div class="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-5 rounded-[24px] shadow-md space-y-2 relative overflow-hidden">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-wider opacity-70">TOTAL UANG MASUK</p>
+          <h2 id="totalMasukPage" class="text-2xl font-extrabold tracking-tight pt-1 text-emerald-200">Rp 0</h2>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Jumlah Nominal</label>
+          <input type="number" id="nominalMasuk" placeholder="Jumlah (Rp)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Keterangan Transaksi</label>
+          <input type="text" id="keteranganMasuk" placeholder="Keterangan (misal: Gaji)" class="input-custom w-full p-2.5 rounded-xl text-xs font-medium" />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kategori</label>
+          <select id="kategoriMasuk" class="input-custom w-full p-2.5 rounded-xl text-xs font-semibold">
+            <option value="GAJI">Gaji</option>
+            <option value="BONUS">Bonus</option>
+            <option value="INVESTASI">Hasil Usaha / Investasi</option>
+          </select>
+        </div>
+        <div class="pt-2">
+          <button onclick="tambahTransaksiSpesifik('Masuk')" class="bg-emerald-600 hover:bg-emerald-700 text-white w-full p-3 rounded-xl text-xs font-bold transition shadow-sm">
+            Simpan Uang Masuk
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAMPILAN KHUSUS: LAPORAN DATA TRANSAKSI ==================== -->
+    <div id="tampilanKhususData" class="space-y-4 flex-1 flex flex-col hidden">
       
       <!-- HEADER NAVIGASI -->
       <div class="flex items-center justify-between pb-1">
-        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
+        <button onclick="bukaHalaman('tampilanUtama')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
           <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
           Kembali
         </button>
@@ -87,22 +282,20 @@
 
       <!-- KARTU RINGKASAN GRADASI -->
       <div class="grid grid-cols-2 gap-2.5">
-        <!-- Card Total Masuk -->
         <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-3.5 rounded-2xl shadow-sm relative overflow-hidden">
           <div class="absolute -right-2 -bottom-2 opacity-15">
             <i data-lucide="arrow-down-left" class="w-16 h-16"></i>
           </div>
           <p class="text-[9px] font-bold uppercase tracking-wider text-emerald-100 opacity-90">TOTAL MASUK</p>
-          <p id="totalMasukText" class="text-xs font-black pt-1 tracking-tight">Rp 131.200.000</p>
+          <p id="totalMasukText" class="text-xs font-black pt-1 tracking-tight">Rp 0</p>
         </div>
 
-        <!-- Card Total Keluar -->
         <div class="bg-gradient-to-br from-rose-600 to-rose-800 text-white p-3.5 rounded-2xl shadow-sm relative overflow-hidden">
           <div class="absolute -right-2 -bottom-2 opacity-15">
             <i data-lucide="arrow-up-right" class="w-16 h-16"></i>
           </div>
           <p class="text-[9px] font-bold uppercase tracking-wider text-rose-100 opacity-90">TOTAL KELUAR</p>
-          <p id="totalKeluarText" class="text-xs font-black pt-1 tracking-tight">Rp 69.225.145</p>
+          <p id="totalKeluarText" class="text-xs font-black pt-1 tracking-tight">Rp 0</p>
         </div>
       </div>
 
@@ -115,9 +308,7 @@
 
       <!-- DAFTAR TRANSAKSI (LIST CARDS) -->
       <div class="flex-1 overflow-y-auto custom-scroll pr-1">
-        <div id="daftarTransaksi" class="space-y-2.5">
-          <!-- Item transaksi akan dirender secara dinamis melalui JavaScript -->
-        </div>
+        <div id="daftarTransaksi" class="space-y-2.5"></div>
       </div>
 
     </div>
@@ -125,8 +316,7 @@
   </div>
 
   <script>
-    // Data Dummy Transaksi
-    let dataTransaksi = [
+    const dataAwal = [
       { id: 1, keterangan: 'LEMBURAN', nominal: 5000000, jenis: 'Masuk', kategori: 'INVESTASI', tanggal: '9 SEP' },
       { id: 2, keterangan: 'GAJI', nominal: 89000000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
       { id: 3, keterangan: 'UANG SEKOLAH', nominal: 15200000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
@@ -135,14 +325,96 @@
       { id: 6, keterangan: 'BELANJA BULANAN', nominal: 13000000, jenis: 'Keluar', kategori: 'BELANJA', tanggal: '8 SEP' }
     ];
 
+    let dataTransaksi = JSON.parse(localStorage.getItem('keuangan_db'));
+    if (!dataTransaksi || dataTransaksi.length === 0) {
+      dataTransaksi = dataAwal;
+    }
+
     let activeFilter = 'MASUK';
+    let chartInstance = null;
 
     function formatRupiah(angka) {
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
     }
 
+    function bukaHalaman(halamanId) {
+      document.getElementById('tampilanUtama').classList.add('hidden');
+      document.getElementById('tampilanUangKeluar').classList.add('hidden');
+      document.getElementById('tampilanUangMasuk').classList.add('hidden');
+      document.getElementById('tampilanKhususData').classList.add('hidden');
+      
+      document.getElementById(halamanId).classList.remove('hidden');
+      
+      if (halamanId === 'tampilanKhususData') {
+        changeFilter(activeFilter);
+      }
+    }
+
+    function renderGrafik() {
+      const ctx = document.getElementById('grafikKeuangan').getContext('2d');
+      let masuk = 0, keluar = 0;
+
+      dataTransaksi.forEach(item => {
+        if (item.jenis === 'Masuk') masuk += item.nominal;
+        if (item.jenis === 'Keluar') keluar += item.nominal;
+      });
+
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Pemasukan', 'Pengeluaran'],
+          datasets: [{
+            data: [masuk || 1, keluar || 0],
+            backgroundColor: ['#059669', '#e11d48'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          cutout: '65%'
+        }
+      });
+    }
+
+    function updateUI() {
+      let masuk = 0, keluar = 0;
+
+      dataTransaksi.forEach(item => {
+        if (item.jenis === 'Masuk') masuk += item.nominal;
+        if (item.jenis === 'Keluar') keluar += item.nominal;
+      });
+
+      document.getElementById('totalMasukPage').innerText = formatRupiah(masuk);
+      document.getElementById('totalKeluarPage').innerText = formatRupiah(keluar);
+      document.getElementById('totalMasukText').innerText = formatRupiah(masuk);
+      document.getElementById('totalKeluarText').innerText = formatRupiah(keluar);
+
+      localStorage.setItem('keuangan_db', JSON.stringify(dataTransaksi));
+      renderGrafik();
+      renderList();
+    }
+
+    function changeFilter(filter) {
+      activeFilter = filter;
+      ['SEMUA', 'Keluar', 'Masuk'].forEach(f => {
+        const btn = document.getElementById('tab-' + f);
+        if (f.toUpperCase() === filter.toUpperCase()) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      renderList();
+    }
+
     function renderList() {
       const container = document.getElementById('daftarTransaksi');
+      if (!container) return;
       container.innerHTML = '';
 
       const filteredData = dataTransaksi.filter(item => {
@@ -190,30 +462,38 @@
         });
       }
 
-      // Re-initialize Lucide Icons untuk elemen baru
       lucide.createIcons();
     }
 
-    function changeFilter(filter) {
-      activeFilter = filter;
-      ['SEMUA', 'Keluar', 'Masuk'].forEach(f => {
-        const btn = document.getElementById('tab-' + f);
-        if (f.toUpperCase() === filter.toUpperCase()) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
-      renderList();
+    function tambahTransaksiSpesifik(jenis) {
+      const suffix = jenis === 'Keluar' ? 'Keluar' : 'Masuk';
+      const ket = document.getElementById('keterangan' + suffix).value.trim();
+      const nom = Number(document.getElementById('nominal' + suffix).value);
+      const kat = document.getElementById('kategori' + suffix).value;
+
+      if (!ket || !nom || nom <= 0) {
+        alert('Mohon isi keterangan dan nominal dengan benar!');
+        return;
+      }
+
+      const tgl = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }).toUpperCase();
+      dataTransaksi.unshift({ id: Date.now(), keterangan: ket.toUpperCase(), nominal: nom, jenis: jenis, kategori: kat, tanggal: tgl });
+
+      document.getElementById('keterangan' + suffix).value = '';
+      document.getElementById('nominal' + suffix).value = '';
+
+      updateUI();
+      bukaHalaman('tampilanKhususData');
     }
 
     function deleteItem(id) {
       dataTransaksi = dataTransaksi.filter(item => item.id !== id);
-      renderList();
+      updateUI();
     }
 
-    // Inisialisasi awal
-    changeFilter('MASUK');
+    // Inisialisasi
+    updateUI();
+    lucide.createIcons();
   </script>
 </body>
 </html>
