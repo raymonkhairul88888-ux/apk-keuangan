@@ -9,8 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Library Chart.js -->
+  <!-- Library Chart.js & Datalabels Plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     body { 
       background-color: #e2e8f0; 
@@ -227,14 +228,14 @@
 
         <hr class="border-slate-200 my-1">
 
-        <!-- BAGIAN 2: GRAFIK SIKLUS KEUANGAN -->
+        <!-- BAGIAN 2: SIKLUS KEUANGAN (PIE CHART MULTI-KATEGORI BERSTYLE PIE BOLA 3D) -->
         <div class="space-y-2 flex-1 flex flex-col justify-end">
           <div class="flex justify-between items-center">
             <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">SIKLUS KEUANGAN</h3>
-            <span class="text-[9px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">Bulanan</span>
+            <span class="text-[9px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">Kategori</span>
           </div>
 
-          <div class="bg-gradient-to-b from-sky-900 to-slate-900 p-3 rounded-2xl shadow-inner relative h-40 w-full flex flex-col justify-end">
+          <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-3 rounded-2xl shadow-inner relative h-48 w-full flex items-center justify-center">
             <canvas id="grafikSiklusBulanan"></canvas>
           </div>
         </div>
@@ -385,6 +386,11 @@
   </div>
 
   <script>
+    // Register ChartDataLabels plugin
+    if (typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
+    }
+
     const dataAwal = [
       { id: 1, keterangan: 'LEMBURAN', nominal: 5000000, jenis: 'Masuk', kategori: 'INVESTASI', tanggal: '9 SEP' },
       { id: 2, keterangan: 'GAJI', nominal: 89000000, jenis: 'Masuk', kategori: 'GAJI', tanggal: '8 SEP' },
@@ -440,6 +446,7 @@
     }
 
     function renderGrafik() {
+      // 1. GRAFIK DOUGHNUT (RODA PERPUTARAN)
       const ctx = document.getElementById('grafikKeuangan').getContext('2d');
       let masuk = 0, keluar = 0;
 
@@ -464,47 +471,54 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { 
+            legend: { display: false },
+            datalabels: { display: false }
+          },
           cutout: '65%'
         }
       });
 
+      // 2. GRAFIK PIE MODEL BARU (SESUAI GAMBAR REFERENSI DENGAN PERSENTASE)
       const ctxSiklus = document.getElementById('grafikSiklusBulanan').getContext('2d');
       if (chartSiklusInstance) chartSiklusInstance.destroy();
 
       chartSiklusInstance = new Chart(ctxSiklus, {
-        type: 'bar',
+        type: 'pie',
         data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-          datasets: [
-            {
-              label: 'Pengeluaran',
-              data: [35, 25, 30, 55, 42, 60, 95, 75, 48, 35, 60, 70],
-              backgroundColor: '#ffffff',
-              borderRadius: 4,
-              barThickness: 5
-            },
-            {
-              label: 'Pemasukan',
-              data: [25, 30, 28, 45, 38, 70, 85, 100, 65, 40, 52, 90],
-              backgroundColor: '#38bdf8',
-              borderRadius: 4,
-              barThickness: 5
-            }
-          ]
+          labels: ['Gaji', 'Belanja', 'Investasi', 'Restoran', 'Transport', 'Lainnya'],
+          datasets: [{
+            data: [30, 25, 15, 15, 11, 4],
+            backgroundColor: [
+              '#e65100', // Oranye Tua (30%)
+              '#558b2f', // Hijau (25%)
+              '#880e4f', // Merah Tua/Burgundy (15%)
+              '#fbc02d', // Kuning Emas (15%)
+              '#00838f', // Toska / Teal (11%)
+              '#1a237e'  // Biru Gelap (4%)
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            offset: [5, 5, 5, 12, 5, 5] // Efek irisan menonjol seperti di gambar
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: {
-              grid: { display: false },
-              ticks: { color: '#94a3b8', font: { size: 8, weight: 'bold' } }
+            legend: {
+              display: false
             },
-            y: { display: false }
+            datalabels: {
+              color: '#ffffff',
+              font: {
+                weight: 'bold',
+                size: 10
+              },
+              formatter: (value) => {
+                return value + '%';
+              }
+            }
           }
         }
       });
