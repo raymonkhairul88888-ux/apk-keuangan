@@ -32,59 +32,61 @@
       font-weight: 700; 
     }
 
-    /* Styling Tombol Power Kotak (3D Square Glass/Metallic Button) */
-    .btn-power-square {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-      border: 1px solid #cbd5e1;
+    /* Styling Tombol Home Glossy 3D (Sesuai Gambar Pertama) */
+    .btn-home-glossy {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fb923c 0%, #ea580c 60%, #9a3412 100%);
+      border: 2px solid #fdba74;
       box-shadow: 
-        0 4px 6px -1px rgba(0, 0, 0, 0.15), 
-        0 2px 4px -1px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      padding: 3px;
+        0 4px 8px rgba(0, 0, 0, 0.3), 
+        inset 0 3px 5px rgba(255, 255, 255, 0.6),
+        inset 0 -3px 5px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
       transition: all 0.15s ease;
     }
-    
-    /* Lis Dalam Warna Teal / Cyan Gradasi */
-    .btn-power-square-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 7px;
-      background: linear-gradient(180deg, #0d4b56 0%, #14b8a6 100%);
-      padding: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    /* Pantulan Kilauan Glossy Atas */
+    .btn-home-glossy::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      width: 14px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 10px 10px 5px 5px;
+      transform: rotate(-25deg);
     }
 
-    /* Area Tengah Putih Mengkilap */
-    .btn-power-square-core {
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 -1px 2px rgba(0,0,0,0.1);
+    /* Pantulan Kilauan Glossy Bawah */
+    .btn-home-glossy::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      right: 7px;
+      width: 6px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
     }
 
-    .btn-power-square:hover {
-      transform: translateY(-1px);
+    .btn-home-glossy:hover {
+      transform: scale(1.08);
       box-shadow: 
-        0 6px 8px -1px rgba(0, 0, 0, 0.18), 
-        inset 0 1px 0 rgba(255, 255, 255, 1);
+        0 6px 12px rgba(0, 0, 0, 0.35), 
+        inset 0 3px 6px rgba(255, 255, 255, 0.8);
     }
-    .btn-power-square:active {
-      transform: translateY(1px);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    .btn-home-glossy:active {
+      transform: scale(0.95);
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
     }
   </style>
 </head>
@@ -99,31 +101,30 @@
     <!-- ==================== TAMPILAN 1: DASHBOARD UTAMA ==================== -->
     <div id="tampilanUtama" class="space-y-4 flex-1">
       
-      <!-- Card Header Bersih -->
-      <div class="app-card p-5 rounded-[24px] shadow-sm space-y-1 relative">
-        <div class="text-[10px] font-bold tracking-widest uppercase opacity-75">
-          CATATAN ASISTEN
+      <!-- Card Header dengan Tombol Home Glossy di Bagian Atas Kanan -->
+      <div class="app-card p-5 rounded-[24px] shadow-sm flex items-center justify-between relative">
+        <div class="space-y-0.5">
+          <div class="text-[10px] font-bold tracking-widest uppercase opacity-75">
+            CATATAN ASISTEN
+          </div>
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN</p>
+          </div>
         </div>
-        <div>
-          <p class="text-xs font-extrabold uppercase tracking-wider opacity-90">PEMBUKUAN KEUANGAN</p>
-        </div>
+
+        <!-- TOMBOL HOME GLOSSY ORANGE DILETAKKAN DI ATAS -->
+        <button onclick="bukaHalaman('tampilanKhususData')" class="btn-home-glossy" title="Buka Data Transaksi">
+          <!-- Ikon Rumah Putih dengan Efek Shadow/Kedalaman -->
+          <svg class="w-5 h-5 text-white drop-shadow-[0_2px_1px_rgba(0,0,0,0.3)]" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.47 2.72a.75.75 0 011.06 0l8.25 8.25a.75.75 0 11-1.06 1.06L20 11.25V20a1.5 1.5 0 01-1.5 1.5h-4.5a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-1.5a.75.75 0 00-.75.75v4.5a.75.75 0 01-.75.75h-4.5A1.5 1.5 0 014 20v-8.75l-.72.72a.75.75 0 01-1.06-1.06l8.25-8.25z"/>
+          </svg>
+        </button>
       </div>
 
       <!-- GRAFIK KEUANGAN & LEGENDA INTERAKTIF -->
       <div class="bg-slate-50 p-4 rounded-[24px] border border-slate-100 shadow-sm space-y-2">
         <div class="flex justify-between items-center">
           <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">RODA PERPUTARAN</h3>
-          
-          <!-- TOMBOL POWER KOTAK SESUAI GAMBAR -->
-          <button onclick="bukaHalaman('tampilanKhususData')" class="btn-power-square" title="Buka Data Transaksi">
-            <div class="btn-power-square-inner">
-              <div class="btn-power-square-core">
-                <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"></path>
-                </svg>
-              </div>
-            </div>
-          </button>
         </div>
         
         <div class="relative flex items-center justify-center h-44 w-full pt-1">
