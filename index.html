@@ -225,10 +225,10 @@
         </button>
       </div>
 
-      <!-- KOTAK PETAK BESAR -->
+      <!-- KOTAK PETAK UTAMA -->
       <div class="bg-slate-50/80 backdrop-blur-xs p-4 rounded-[24px] border border-slate-100 shadow-sm flex-1 flex flex-col justify-between space-y-3 z-10">
         
-        <!-- BAGIAN 1: RODA PERPUTARAN (GRAFIK LINGKARAN) -->
+        <!-- BAGIAN 1: RODA PERPUTARAN (GRAFIK LINGKARAN ATAS) -->
         <div class="space-y-2">
           <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">RODA PERPUTARAN</h3>
           
@@ -251,14 +251,9 @@
 
         <hr class="border-slate-200 my-1">
 
-        <!-- BAGIAN 2: SIKLUS KEUANGAN -->
-        <div class="space-y-2 flex-1 flex flex-col justify-end">
-          <div class="flex justify-between items-center">
-            <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase">SIKLUS KEUANGAN</h3>
-            <span class="text-[9px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-100">Kategori</span>
-          </div>
-
-          <div class="bg-gradient-to-b from-slate-900 to-slate-950 p-3 rounded-2xl shadow-inner relative h-48 w-full flex items-center justify-center">
+        <!-- BAGIAN 2: DIAGRAM PIE PERSIS GAMBAR ACUAN (TANPA PETAK HITAM & TULISAN SIKLUS KEUANGAN/KATEGORI) -->
+        <div class="flex-1 flex items-center justify-center pt-2">
+          <div class="relative h-52 w-full flex items-center justify-center">
             <canvas id="grafikSiklusBulanan"></canvas>
           </div>
         </div>
@@ -392,7 +387,7 @@
         </div>
       </div>
 
-      <!-- TAB FILTER SEGMENTED CONTROL: SEMUA DI TENGAH DENGAN POSISI UTAMA -->
+      <!-- TAB FILTER SEGMENTED CONTROL -->
       <div class="segmented-control relative z-10">
         <button onclick="changeFilter('SEMUA')" id="tab-SEMUA" class="segmented-btn active">SEMUA</button>
         <button onclick="changeFilter('Keluar')" id="tab-Keluar" class="segmented-btn">KELUAR</button>
@@ -468,6 +463,7 @@
     }
 
     function renderGrafik() {
+      // 1. GRAFIK RODA PERPUTARAN (DOUGHNUT)
       const ctx = document.getElementById('grafikKeuangan').getContext('2d');
       let masuk = 0, keluar = 0;
 
@@ -500,26 +496,31 @@
         }
       });
 
+      // 2. GRAFIK PIE PERSIS SESUAI GAMBAR ACUAN KEDUA
       const ctxSiklus = document.getElementById('grafikSiklusBulanan').getContext('2d');
       if (chartSiklusInstance) chartSiklusInstance.destroy();
 
       chartSiklusInstance = new Chart(ctxSiklus, {
         type: 'pie',
         data: {
-          labels: ['Gaji', 'Belanja', 'Investasi', 'Restoran', 'Transport', 'Lainnya'],
+          labels: ['30%', '25%', '15%', '15%', '15%', '5%'],
           datasets: [{
-            data: [30, 25, 15, 15, 11, 4],
+            // Nilai sesuai persentase gambar
+            data: [30, 25, 15, 15, 15, 5],
+            // Warna disesuaikan dengan gambar acuan:
+            // Orange (30%), Green (25%), Magenta/Maroon (15%), Yellow (15%), Cyan (15%), Dark Blue (5%)
             backgroundColor: [
-              '#e65100',
-              '#558b2f',
-              '#880e4f',
-              '#fbc02d',
-              '#00838f',
-              '#1a237e'
+              '#e06836', // Orange
+              '#4d8227', // Green
+              '#801a41', // Magenta/Maroon
+              '#eebf4a', // Yellow
+              '#36a2bd', // Cyan/Biru Muda
+              '#1e2d4a'  // Dark Navy
             ],
             borderWidth: 2,
             borderColor: '#ffffff',
-            offset: [5, 5, 5, 12, 5, 5]
+            // Efek potongan slice yang menonjol persis gambar acuan
+            offset: [0, 0, 0, 18, 0, 0]
           }]
         },
         options: {
