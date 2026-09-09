@@ -7,6 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Keuangan Mobile</title>
+
+<!-- Link Manifest PWA -->
+<link rel="manifest" href="manifest.json">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -167,6 +171,11 @@ function toggleDelete(){del=!del;list()}
 function filterTx(f){filter=f;['tall','tout','tin'].forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(f==='SEMUA'?'tall':f==='Keluar'?'tout':'tin').classList.add('active');list()}
 function openPage(id){['dashboard','keluar','masuk','data'].forEach(x=>document.getElementById(x).style.display=x===id?'flex':'none');window.scrollTo(0,0);lucide.createIcons()}
 render();lucide.createIcons();
+
+// Registrasi Service Worker untuk PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('pwabuilder-sw.js');
+}
 </script>
 </body>
 </html>
