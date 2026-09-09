@@ -227,7 +227,7 @@
       <!-- KOTAK PETAK UTAMA -->
       <div class="bg-slate-50/80 backdrop-blur-xs p-4 rounded-[24px] border border-slate-100 shadow-sm flex-1 flex flex-col justify-between space-y-3 z-10">
         
-        <!-- BACAAN RODA PERPUTARAN DAN DIAGRAM PIE PERSENTASE (PINDAH KE ATAS) -->
+        <!-- BACAAN RODA PERPUTARAN DAN DIAGRAM PIE DINAMIS BERDASARKAN DATA -->
         <div class="space-y-2 flex-1 flex flex-col justify-between">
           <h3 class="text-[11px] font-extrabold text-slate-700 tracking-wider uppercase text-center">RODA PERPUTARAN</h3>
           
@@ -448,27 +448,52 @@
     }
 
     function renderGrafik() {
-      // DIAGRAM PIE PERSENTASE (ATAS & UTAMA)
+      // PROSES DATA TRANSAKSI UTAMA KE KATEGORI DAN WARNA SESUAI JENIS TRANSAKSI
+      const agregatKategori = {};
+
+      dataTransaksi.forEach(item => {
+        const kat = item.kategori || 'LAIN-LAIN';
+        if (!agregatKategori[kat]) {
+          agregatKategori[kat] = {
+            total: 0,
+            jenis: item.jenis
+          };
+        }
+        agregatKategori[kat].total += item.nominal;
+      });
+
+      const labels = Object.keys(agregatKategori);
+      const dataValues = labels.map(k => agregatKategori[k].total);
+      const grandTotal = dataValues.reduce((a, b) => a + b, 0) || 1;
+
+      // PALET WARNA DINAMIS BERDASARKAN PEMASUKAN ATAU PENGELUARAN
+      const bgColors = labels.map(k => {
+        const jenis = agregatKategori[k].jenis;
+        if (jenis === 'Keluar') {
+          return '#e11d48'; // Warna Rose/Merah Pengeluaran
+        } else {
+          return '#059669'; // Warna Emerald/Hijau Pemasukan
+        }
+      });
+
+      // BILA BELUM ADA DATA KEUANGAN
+      const finalLabels = labels.length > 0 ? labels : ['Belum Ada Data'];
+      const finalData = dataValues.length > 0 ? dataValues : [1];
+      const finalColors = bgColors.length > 0 ? bgColors : ['#cbd5e1'];
+
       const ctxSiklus = document.getElementById('grafikSiklusBulanan').getContext('2d');
       if (chartSiklusInstance) chartSiklusInstance.destroy();
 
       chartSiklusInstance = new Chart(ctxSiklus, {
         type: 'pie',
         data: {
-          labels: ['30%', '25%', '15%', '15%', '15%', '5%'],
+          labels: finalLabels,
           datasets: [{
-            data: [30, 25, 15, 15, 15, 5],
-            backgroundColor: [
-              '#e06836', // Orange
-              '#4d8227', // Hijau
-              '#801a41', // Maroon/Magenta
-              '#eebf4a', // Kuning
-              '#36a2bd', // Cyan/Biru
-              '#1e2d4a'  // Gelap
-            ],
+            data: finalData,
+            backgroundColor: finalColors,
             borderWidth: 2,
             borderColor: '#ffffff',
-            offset: [0, 0, 0, 18, 0, 0]
+            offset: finalData.map(() => 4)
           }]
         },
         options: {
@@ -476,10 +501,23 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw || 0;
+                  const pct = Math.round((val / grandTotal) * 100);
+                  return ` ${context.label}: ${formatRupiah(val)} (${pct}%)`;
+                }
+              }
+            },
             datalabels: {
               color: '#ffffff',
-              font: { weight: 'bold', size: 12 },
-              formatter: (value) => value + '%'
+              font: { weight: 'bold', size: 11 },
+              formatter: (value) => {
+                if (dataValues.length === 0) return '0%';
+                const pct = Math.round((value / grandTotal) * 100);
+                return pct > 0 ? pct + '%' : '';
+              }
             }
           }
         }
